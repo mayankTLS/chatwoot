@@ -171,5 +171,5 @@
   enabled: false
 - name: data_masking
   display_name: Data Masking
-  enabled: true
+  enabled: false
   help_url: https://chwt.app/hc/data-masking
