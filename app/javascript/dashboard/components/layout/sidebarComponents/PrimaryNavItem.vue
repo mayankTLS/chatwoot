@@ -94,7 +94,7 @@ export default {
 <template>
   <OnClickOutside v-if="isHelpCenter" @trigger="showHelpCenterMenu = false">
     <button
-      v-tooltip.top="$t(`SIDEBAR.${name}`)"
+      v-tooltip.top="$t('SIDEBAR.' + name)"
       class="relative flex items-center justify-center w-10 h-10 my-2 rounded-lg text-slate-700 dark:text-slate-100 hover:!bg-slate-25 dark:hover:!bg-slate-700 dark:hover:text-slate-100 hover:text-slate-600"
       :class="{
         'bg-woot-50 dark:bg-slate-800 text-woot-500 hover:bg-woot-50':
@@ -119,7 +119,7 @@ export default {
 
   <router-link v-else v-slot="{ href, isActive, navigate }" :to="to" custom>
     <a
-      v-tooltip.right="$t(`SIDEBAR.${name}`)"
+      v-tooltip.right="$t('SIDEBAR.' + name)"
       :href="href"
       class="relative flex items-center justify-center w-10 h-10 my-2 rounded-lg text-slate-700 dark:text-slate-100 hover:bg-slate-25 dark:hover:bg-slate-700 dark:hover:text-slate-100 hover:text-slate-600"
       :class="{

@@ -55,9 +55,9 @@ export default {
         RESOLUTION_TIME: this.$t(`REPORT.METRICS.RESOLUTION_TIME.INFO_TEXT`),
       };
       return reportKeys.map(key => ({
-        NAME: this.$t(`REPORT.METRICS.${key}.NAME`),
+        NAME: this.$t('REPORT.METRICS.' + key + '.NAME'),
         KEY: this.reportKeys[key],
-        DESC: this.$t(`REPORT.METRICS.${key}.DESC`),
+        DESC: this.$t('REPORT.METRICS.' + key + '.DESC'),
         INFO_TEXT: infoText[key],
         TOOLTIP_TEXT: `REPORT.METRICS.${key}.TOOLTIP_TEXT`,
         trend: this.calculateTrend(this.reportKeys[key]),

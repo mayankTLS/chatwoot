@@ -190,7 +190,7 @@ export default {
             :key="o"
             :value="operator.value"
           >
-            {{ $t(`FILTER.OPERATOR_LABELS.${operator.value}`) }}
+            {{ $t('FILTER.OPERATOR_LABELS.' + operator.value) }}
           </option>
         </select>
 

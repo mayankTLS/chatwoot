@@ -43,11 +43,11 @@ const handleSubmit = async updatedResponse => {
     } else {
       await createResponse(updatedResponse);
     }
-    useAlert(t(`${i18nKey.value}.SUCCESS_MESSAGE`));
+    useAlert(t(i18nKey.value + '.SUCCESS_MESSAGE'));
     dialogRef.value.close();
   } catch (error) {
     const errorMessage =
-      error?.response?.message || t(`${i18nKey.value}.ERROR_MESSAGE`);
+      error?.response?.message || t(i18nKey.value + '.ERROR_MESSAGE');
     useAlert(errorMessage);
   }
 };
@@ -66,7 +66,7 @@ defineExpose({ dialogRef });
 <template>
   <Dialog
     ref="dialogRef"
-    :title="$t(`${i18nKey}.TITLE`)"
+    :title="$t(i18nKey + '.TITLE')"
     :description="$t('CAPTAIN.RESPONSES.FORM_DESCRIPTION')"
     :show-cancel-button="false"
     :show-confirm-button="false"

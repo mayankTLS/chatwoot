@@ -35,13 +35,13 @@ const initializeNotificationUISettings = newUISettings => {
   audioAlertConditions.value = [
     {
       id: 'audio1',
-      label: t(`${i18nKeyPrefix}.CONDITIONS.CONDITION_ONE`),
+      label: t(i18nKeyPrefix + '.CONDITIONS.CONDITION_ONE'),
       model: playAudioWhenTabIsInactive.value,
       value: 'tab_is_inactive',
     },
     {
       id: 'audio2',
-      label: t(`${i18nKeyPrefix}.CONDITIONS.CONDITION_TWO`),
+      label: t(i18nKeyPrefix + '.CONDITIONS.CONDITION_TWO'),
       model: alertIfUnreadConversationExist.value,
       value: 'conversations_are_read',
     },
@@ -93,19 +93,19 @@ const handleAudioToneChange = value => {
   <div id="profile-settings-notifications" class="flex flex-col gap-6">
     <AudioAlertTone
       :value="alertTone"
-      :label="$t(`${i18nKeyPrefix}.DEFAULT_TONE.TITLE`)"
+      :label="$t(i18nKeyPrefix + '.DEFAULT_TONE.TITLE')"
       @change="handleAudioToneChange"
     />
 
     <AudioAlertEvent
-      :label="$t(`${i18nKeyPrefix}.ALERT_TYPE.TITLE`)"
+      :label="$t(i18nKeyPrefix + '.ALERT_TYPE.TITLE')"
       :value="audioAlert"
       @update="handAudioAlertChange"
     />
 
     <AudioAlertCondition
       :items="audioAlertConditions"
-      :label="$t(`${i18nKeyPrefix}.CONDITIONS.TITLE`)"
+      :label="$t(i18nKeyPrefix + '.CONDITIONS.TITLE')"
       @change="handleAudioAlertConditions"
     />
   </div>

@@ -98,7 +98,7 @@ export default {
     automationRuleEvents() {
       return AUTOMATION_RULE_EVENTS.map(event => ({
         ...event,
-        value: this.$t(`AUTOMATION.EVENTS.${event.value}`),
+        value: this.$t('AUTOMATION.EVENTS.' + event.value),
       }));
     },
     hasAutomationMutated() {
@@ -116,7 +116,7 @@ export default {
 
       return actionTypes.map(action => ({
         ...action,
-        label: this.$t(`AUTOMATION.ACTIONS.${action.label}`),
+        label: this.$t('AUTOMATION.ACTIONS.' + action.label),
       }));
     },
   },
@@ -162,7 +162,7 @@ export default {
           ...attribute,
           name: skipTranslation
             ? attribute.name
-            : this.$t(`AUTOMATION.ATTRIBUTES.${attribute.name}`),
+            : this.$t('AUTOMATION.ATTRIBUTES.' + attribute.name),
         };
       });
     },
@@ -267,7 +267,7 @@ export default {
               "
               :error-message="
                 errors[`condition_${i}`]
-                  ? $t(`AUTOMATION.ERRORS.${errors[`condition_${i}`]}`)
+                  ? $t('AUTOMATION.ERRORS.' + errors[`condition_${i}`])
                   : ''
               "
               @reset-filter="resetFilter(i, automation.conditions[i])"
@@ -310,7 +310,7 @@ export default {
               "
               :error-message="
                 errors[`action_${i}`]
-                  ? $t(`AUTOMATION.ERRORS.${errors[`action_${i}`]}`)
+                  ? $t('AUTOMATION.ERRORS.' + errors[`action_${i}`])
                   : ''
               "
               @reset-action="resetAction(i)"

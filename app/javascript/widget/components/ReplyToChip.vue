@@ -24,7 +24,7 @@ export default {
       }
 
       const [{ file_type: fileType } = {}] = this.replyTo.attachments;
-      return this.$t(`ATTACHMENTS.${fileType}.CONTENT`);
+      return this.$t('ATTACHMENTS.' + fileType + '.CONTENT');
     },
   },
 
