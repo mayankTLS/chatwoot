@@ -88,7 +88,7 @@ const closeDropdown = () => {
               <FilterListDropdown
                 :list-items="item.options"
                 :input-placeholder="
-                  $t(`${placeholderI18nKey}.${item.type.toUpperCase()}`)
+                  $t(placeholderI18nKey + '.' + item.type.toUpperCase())
                 "
                 :enable-search="enableSearch"
                 class="flex flex-col w-[216px] overflow-y-auto top-0 left-36"

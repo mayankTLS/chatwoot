@@ -38,31 +38,31 @@ const emit = defineEmits(['upgrade']);
         />
       </span>
       <span class="text-base font-medium text-n-slate-12">
-        {{ $t(`${featurePrefix}.PAYWALL.TITLE`) }}
+        {{ $t(featurePrefix + '.PAYWALL.TITLE') }}
       </span>
     </div>
     <p
-      v-dompurify-html="$t(`${featurePrefix}.${i18nKey}.AVAILABLE_ON`)"
+      v-dompurify-html="$t(featurePrefix + '.' + i18nKey + '.AVAILABLE_ON')"
       class="text-sm font-normal text-n-slate-11"
     />
     <p class="text-sm font-normal text-n-slate-11">
-      {{ $t(`${featurePrefix}.${i18nKey}.UPGRADE_PROMPT`) }}
+      {{ $t(featurePrefix + '.' + i18nKey + '.UPGRADE_PROMPT') }}
       <span v-if="!isOnChatwootCloud && !isSuperAdmin">
-        {{ $t(`${featurePrefix}.ENTERPRISE_PAYWALL.ASK_ADMIN`) }}
+        {{ $t(featurePrefix + '.ENTERPRISE_PAYWALL.ASK_ADMIN') }}
       </span>
     </p>
     <template v-if="isOnChatwootCloud">
       <ButtonV4 blue solid md @click="emit('upgrade')">
-        {{ $t(`${featurePrefix}.PAYWALL.UPGRADE_NOW`) }}
+        {{ $t(featurePrefix + '.PAYWALL.UPGRADE_NOW') }}
       </ButtonV4>
       <span class="mt-2 text-xs tracking-tight text-center text-n-slate-11">
-        {{ $t(`${featurePrefix}.PAYWALL.CANCEL_ANYTIME`) }}
+        {{ $t(featurePrefix + '.PAYWALL.CANCEL_ANYTIME') }}
       </span>
     </template>
     <template v-else-if="isSuperAdmin">
       <a href="/super_admin" class="block w-full">
         <ButtonV4 solid blue md class="w-full">
-          {{ $t(`${featurePrefix}.PAYWALL.UPGRADE_NOW`) }}
+          {{ $t(featurePrefix + '.PAYWALL.UPGRADE_NOW') }}
         </ButtonV4>
       </a>
     </template>

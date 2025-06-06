@@ -20,8 +20,8 @@ export default {
 
       return steps.map(step => {
         return {
-          title: this.$t(`INBOX_MGMT.CREATE_FLOW.${step}.TITLE`),
-          body: this.$t(`INBOX_MGMT.CREATE_FLOW.${step}.BODY`),
+          title: this.$t('INBOX_MGMT.CREATE_FLOW.' + step + '.TITLE'),
+          body: this.$t('INBOX_MGMT.CREATE_FLOW.' + step + '.BODY'),
           route: routes[step],
         };
       });

@@ -204,7 +204,7 @@ const isSubmitDisabled = computed(
               class="ltr:mr-2 rtl:ml-2"
             />
             <label :for="permission" class="text-sm font-normal">
-              {{ $t(`CUSTOM_ROLE.PERMISSIONS.${permission.toUpperCase()}`) }}
+              {{ $t('CUSTOM_ROLE.PERMISSIONS.' + permission.toUpperCase()) }}
             </label>
           </div>
         </div>
