@@ -12,8 +12,8 @@ export default {
 
       return steps.map(step => {
         return {
-          title: this.$t(`TEAMS_SETTINGS.CREATE_FLOW.${step}.TITLE`),
-          body: this.$t(`TEAMS_SETTINGS.CREATE_FLOW.${step}.BODY`),
+          title: this.$t('TEAMS_SETTINGS.CREATE_FLOW.' + step + '.TITLE'),
+          body: this.$t('TEAMS_SETTINGS.CREATE_FLOW.' + step + '.BODY'),
           route: routes[step],
         };
       });

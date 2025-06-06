@@ -225,17 +225,17 @@ export default {
     </div>
     <div class="flex-shrink-0 flex-grow-0">
       <label :class="{ error: v$.authToken.$error }">
-        {{ $t(`INBOX_MGMT.ADD.TWILIO.${authTokeni18nKey}.LABEL`) }}
+        {{ $t('INBOX_MGMT.ADD.TWILIO.' + authTokeni18nKey + '.LABEL') }}
         <input
           v-model="authToken"
           type="text"
           :placeholder="
-            $t(`INBOX_MGMT.ADD.TWILIO.${authTokeni18nKey}.PLACEHOLDER`)
+            $t('INBOX_MGMT.ADD.TWILIO.' + authTokeni18nKey + '.PLACEHOLDER')
           "
           @blur="v$.authToken.$touch"
         />
         <span v-if="v$.authToken.$error" class="message">
-          {{ $t(`INBOX_MGMT.ADD.TWILIO.${authTokeni18nKey}.ERROR`) }}
+          {{ $t('INBOX_MGMT.ADD.TWILIO.' + authTokeni18nKey + '.ERROR') }}
         </span>
       </label>
     </div>

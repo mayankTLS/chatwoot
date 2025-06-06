@@ -50,11 +50,13 @@ export default {
   },
   computed: {
     header() {
-      return this.$t(`INTEGRATION_SETTINGS.DASHBOARD_APPS.${this.mode}.HEADER`);
+      return this.$t(
+        'INTEGRATION_SETTINGS.DASHBOARD_APPS.' + this.mode + '.HEADER'
+      );
     },
     submitButtonLabel() {
       return this.$t(
-        `INTEGRATION_SETTINGS.DASHBOARD_APPS.${this.mode}.FORM_SUBMIT`
+        'INTEGRATION_SETTINGS.DASHBOARD_APPS.' + this.mode + '.FORM_SUBMIT'
       );
     },
   },
@@ -94,13 +96,15 @@ export default {
         await this.$store.dispatch(`dashboardApps/${action}`, payload);
         useAlert(
           this.$t(
-            `INTEGRATION_SETTINGS.DASHBOARD_APPS.${this.mode}.API_SUCCESS`
+            'INTEGRATION_SETTINGS.DASHBOARD_APPS.' + this.mode + '.API_SUCCESS'
           )
         );
         this.closeModal();
       } catch (err) {
         useAlert(
-          this.$t(`INTEGRATION_SETTINGS.DASHBOARD_APPS.${this.mode}.API_ERROR`)
+          this.$t(
+            'INTEGRATION_SETTINGS.DASHBOARD_APPS.' + this.mode + '.API_ERROR'
+          )
         );
       } finally {
         this.isLoading = false;
