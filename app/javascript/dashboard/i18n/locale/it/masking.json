@@ -1,0 +1,47 @@
+{
+  "MASKING_SETTINGS": {
+    "HEADER": "Data Masking",
+    "DESCRIPTION": "Configure masking settings for sensitive data like email addresses and phone numbers to protect user privacy.",
+    "UPDATE_SUCCESS": "Masking settings updated successfully",
+    "UPDATE_ERROR": "There was an error updating masking settings. Please try again.",
+    "FORM": {
+      "ENABLE_MASKING": {
+        "LABEL": "Enable data masking",
+        "HELP_TEXT": "When enabled, sensitive data will be masked for users based on their permissions."
+      },
+      "EMAIL_SECTION": {
+        "TITLE": "Email Masking",
+        "ENABLE_LABEL": "Enable email masking",
+        "PATTERN_LABEL": "Masking pattern"
+      },
+      "PHONE_SECTION": {
+        "TITLE": "Phone Number Masking",
+        "ENABLE_LABEL": "Enable phone number masking",
+        "PATTERN_LABEL": "Masking pattern"
+      },
+      "PERMISSIONS_SECTION": {
+        "TITLE": "Permissions & Access",
+        "ADMIN_BYPASS_LABEL": "Allow administrators to bypass masking",
+        "ADMIN_BYPASS_HELP": "Administrators will see unmasked data regardless of other settings.",
+        "ADMIN_BYPASS_NOTE": "Note: By default, all users including administrators see masked data. Enable this option to allow administrators to see unmasked data.",
+        "EXEMPT_ROLES_LABEL": "Exempt roles from masking",
+        "EXEMPT_ROLES_HELP": "Users with these roles will see unmasked data.",
+        "ALLOW_REVEAL_LABEL": "Allow users to temporarily reveal masked data",
+        "ALLOW_REVEAL_HELP": "Users can click on masked data to temporarily reveal the original value."
+      },
+      "PREVIEW_SECTION": {
+        "TITLE": "Preview",
+        "EMAIL_EXAMPLE": "Email example",
+        "EMAIL_ARROW": "john.doe@example.com →",
+        "EMAIL_MINIMAL": "j***@example.com",
+        "PHONE_EXAMPLE": "Phone example",
+        "PHONE_ARROW": "+1-555-123-4567 →",
+        "PHONE_MINIMAL": "+1 ***-***-4567"
+      },
+      "SUBMIT": "Update Settings",
+      "ERROR": {
+        "VALIDATION": "Please fix the validation errors before saving."
+      }
+    }
+  }
+}
