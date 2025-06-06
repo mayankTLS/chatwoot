@@ -870,12 +870,15 @@ watch(conversationFilters, (newVal, oldVal) => {
       @chat-tab-change="updateAssigneeTab"
     />
 
-    <p
+    <div
       v-if="!chatListLoading && !conversationList.length"
-      class="flex items-center justify-center p-4 overflow-auto"
+      class="flex flex-col items-center justify-center p-4 overflow-auto bg-red-100 border border-red-300"
     >
-      {{ $t('CHAT_LIST.LIST.404') }}
-    </p>
+      <p class="text-red-800 font-bold">{{ $t('CHAT_LIST.LIST.404') }}</p>
+      <div class="text-sm text-red-600">
+        Loading: {{ chatListLoading }} | Length: {{ conversationList.length }}
+      </div>
+    </div>
     <ConversationBulkActions
       v-if="selectedConversations.length"
       :conversations="selectedConversations"

@@ -74,7 +74,9 @@ export default {
       isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
     }),
     showConversationList() {
-      return this.isOnExpandedLayout ? !this.conversationId : true;
+      // Debug: Force conversation list to always show
+      return true;
+      // return this.isOnExpandedLayout ? !this.conversationId : true;
     },
     showMessageView() {
       return this.conversationId ? true : !this.isOnExpandedLayout;
