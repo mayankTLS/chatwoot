@@ -1,6 +1,5 @@
 <script>
 import { defineAsyncComponent, ref } from 'vue';
-import { mapGetters } from 'vuex';
 
 import NextSidebar from 'dashboard/components-next/sidebar/Sidebar.vue';
 import WootKeyShortcutModal from 'dashboard/components/widgets/modal/WootKeyShortcutModal.vue';
@@ -15,7 +14,6 @@ import { useAccount } from 'dashboard/composables/useAccount';
 
 import wootConstants from 'dashboard/constants/globals';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
-import { FEATURE_FLAGS } from 'dashboard/featureFlags';
 
 const CommandBar = defineAsyncComponent(
   () => import('./commands/commandbar.vue')
@@ -62,9 +60,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
-    }),
     currentRoute() {
       return ' ';
     },
@@ -94,10 +89,8 @@ export default {
       return showSecondarySidebar;
     },
     showNextSidebar() {
-      return this.isFeatureEnabledonAccount(
-        this.accountId,
-        FEATURE_FLAGS.CHATWOOT_V4
-      );
+      // Temporarily force regular sidebar to debug layout issues
+      return false;
     },
   },
   watch: {
