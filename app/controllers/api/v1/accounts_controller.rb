@@ -44,11 +44,18 @@ class Api::V1::AccountsController < Api::BaseController
   end
 
   def update
+    old_settings = @account.settings.deep_dup
+    
     @account.assign_attributes(account_params.slice(:name, :locale, :domain, :support_email))
     @account.custom_attributes.merge!(custom_attributes_params)
     @account.settings.merge!(settings_params)
     @account.custom_attributes['onboarding_step'] = 'invite_team' if @account.custom_attributes['onboarding_step'] == 'account_update'
     @account.save!
+    
+    # Log masking settings changes for audit purposes
+    if settings_params.key?(:masking)
+      log_masking_settings_change(old_settings, @account.settings)
+    end
   end
 
   def update_active_at
@@ -92,7 +99,24 @@ class Api::V1::AccountsController < Api::BaseController
   end
 
   def settings_params
-    params.permit(:auto_resolve_after, :auto_resolve_message, :auto_resolve_ignore_waiting)
+    permitted = params.permit(:auto_resolve_after, :auto_resolve_message, :auto_resolve_ignore_waiting)
+    
+    # Handle masking settings
+    if params[:masking].present?
+      masking_params = params.require(:masking).permit(
+        :masking_enabled,
+        masking_rules: [
+          :admin_bypass, 
+          :allow_reveal,
+          { exempt_roles: [] },
+          email: [:enabled, :pattern],
+          phone: [:enabled, :pattern]
+        ]
+      )
+      permitted[:masking] = masking_params
+    end
+    
+    permitted
   end
 
   def check_signup_enabled
@@ -109,5 +133,17 @@ class Api::V1::AccountsController < Api::BaseController
       account: @account,
       account_user: @current_account_user
     }
+  end
+
+  def log_masking_settings_change(old_settings, new_settings)
+    AuditLog::MaskingAuditService.log_settings_change(
+      user: current_user,
+      account: @account,
+      old_settings: old_settings&.dig('masking'),
+      new_settings: new_settings&.dig('masking')
+    )
+  rescue StandardError => e
+    # Don't let audit logging failures break the application
+    Rails.logger.error "Failed to log masking settings change: #{e.message}"
   end
 end

@@ -40,6 +40,7 @@ const settings = accountId => ({
     'settings_teams_new',
     'sla_list',
     'custom_roles_list',
+    'masking_settings_index',
   ],
   menuItems: [
     {
@@ -202,6 +203,16 @@ const settings = accountId => ({
       isEnterpriseOnly: true,
       featureFlag: FEATURE_FLAGS.SLA,
       beta: true,
+    },
+    {
+      icon: 'eye-off',
+      label: 'DATA_MASKING',
+      hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
+      toState: frontendURL(`accounts/${accountId}/settings/masking`),
+      toStateName: 'masking_settings_index',
     },
     {
       icon: 'credit-card-person',

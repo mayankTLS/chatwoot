@@ -1,9 +1,9 @@
 json.additional_attributes resource.additional_attributes
 json.availability_status resource.availability_status
-json.email resource.email
+json.email resource.mask_email_for_user(resource.email, Current.user, Current.account)
 json.id resource.id
 json.name resource.name
-json.phone_number resource.phone_number
+json.phone_number resource.mask_phone_for_user(resource.phone_number, Current.user, Current.account)
 json.blocked resource.blocked
 json.identifier resource.identifier
 json.thumbnail resource.avatar_url

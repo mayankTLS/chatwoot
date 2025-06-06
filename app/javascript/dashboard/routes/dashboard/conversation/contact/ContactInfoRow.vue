@@ -26,6 +26,10 @@ export default {
       type: String,
       default: '',
     },
+    copyValue: {
+      type: String,
+      default: '',
+    },
     showCopy: {
       type: Boolean,
       default: false,
@@ -34,7 +38,8 @@ export default {
   methods: {
     async onCopy(e) {
       e.preventDefault();
-      await copyTextToClipboard(this.value);
+      const valueToCopy = this.copyValue || this.value;
+      await copyTextToClipboard(valueToCopy);
       useAlert(this.$t('CONTACT_PANEL.COPY_SUCCESSFUL'));
     },
   },

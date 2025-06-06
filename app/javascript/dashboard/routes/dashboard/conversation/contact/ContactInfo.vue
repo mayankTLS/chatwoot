@@ -1,6 +1,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import { useAlert } from 'dashboard/composables';
+import { useMasking } from 'dashboard/composables/useMasking';
 import { dynamicTime } from 'shared/helpers/timeHelper';
 import { useAdmin } from 'dashboard/composables/useAdmin';
 import ContactInfoRow from './ContactInfoRow.vue';
@@ -42,8 +43,21 @@ export default {
   emits: ['panelClose'],
   setup() {
     const { isAdmin } = useAdmin();
+    const { 
+      getDisplayEmail, 
+      getDisplayPhone, 
+      shouldShowMailtoLink, 
+      shouldShowTelLink,
+      getLinkValue 
+    } = useMasking();
+    
     return {
       isAdmin,
+      getDisplayEmail,
+      getDisplayPhone,
+      shouldShowMailtoLink,
+      shouldShowTelLink,
+      getLinkValue,
     };
   },
   data() {
@@ -221,16 +235,18 @@ export default {
         </p>
         <div class="flex flex-col items-start w-full gap-2">
           <ContactInfoRow
-            :href="contact.email ? `mailto:${contact.email}` : ''"
-            :value="contact.email"
+            :href="shouldShowMailtoLink(contact.email) ? `mailto:${getLinkValue(getDisplayEmail(contact.email), contact.email)}` : ''"
+            :value="getDisplayEmail(contact.email)"
+            :copy-value="contact.email"
             icon="mail"
             emoji="✉️"
             :title="$t('CONTACT_PANEL.EMAIL_ADDRESS')"
             show-copy
           />
           <ContactInfoRow
-            :href="contact.phone_number ? `tel:${contact.phone_number}` : ''"
-            :value="contact.phone_number"
+            :href="shouldShowTelLink(contact.phone_number) ? `tel:${getLinkValue(getDisplayPhone(contact.phone_number), contact.phone_number)}` : ''"
+            :value="getDisplayPhone(contact.phone_number)"
+            :copy-value="contact.phone_number"
             icon="call"
             emoji="📞"
             :title="$t('CONTACT_PANEL.PHONE_NUMBER')"

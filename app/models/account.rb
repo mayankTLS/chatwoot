@@ -35,7 +35,35 @@ class Account < ApplicationRecord
       {
         'auto_resolve_after': { 'type': %w[integer null], 'minimum': 10, 'maximum': 1_439_856 },
         'auto_resolve_message': { 'type': %w[string null] },
-        'auto_resolve_ignore_waiting': { 'type': %w[boolean null] }
+        'auto_resolve_ignore_waiting': { 'type': %w[boolean null] },
+        'masking': {
+          'type': 'object',
+          'properties': {
+            'masking_enabled': { 'type': 'boolean' },
+            'masking_rules': {
+              'type': 'object',
+              'properties': {
+                'email': {
+                  'type': 'object',
+                  'properties': {
+                    'enabled': { 'type': 'boolean' },
+                    'pattern': { 'type': 'string', 'enum': %w[minimal standard complete] }
+                  }
+                },
+                'phone': {
+                  'type': 'object',
+                  'properties': {
+                    'enabled': { 'type': 'boolean' },
+                    'pattern': { 'type': 'string', 'enum': %w[minimal standard complete] }
+                  }
+                },
+                'admin_bypass': { 'type': 'boolean' },
+                'exempt_roles': { 'type': 'array', 'items': { 'type': 'string' } },
+                'allow_reveal': { 'type': 'boolean' }
+              }
+            }
+          }
+        }
       },
     'required': [],
     'additionalProperties': true
@@ -51,7 +79,7 @@ class Account < ApplicationRecord
                  schema: SETTINGS_PARAMS_SCHEMA,
                  attribute_resolver: ->(record) { record.settings }
 
-  store_accessor :settings, :auto_resolve_after, :auto_resolve_message, :auto_resolve_ignore_waiting
+  store_accessor :settings, :auto_resolve_after, :auto_resolve_message, :auto_resolve_ignore_waiting, :masking
 
   has_many :account_users, dependent: :destroy_async
   has_many :agent_bot_inboxes, dependent: :destroy_async
@@ -122,6 +150,54 @@ class Account < ApplicationRecord
                                     taggable_type: 'Conversation',
                                     taggable_id: conversation_ids)
                              .map { |tagging| tagging.tag.name }
+  end
+
+  def masking_enabled?
+    # Default to true if not explicitly set to false
+    masking&.dig('masking_enabled') != false
+  end
+
+  def masking_rules
+    masking&.dig('masking_rules') || default_masking_rules
+  end
+
+  def masking_enabled_for?(data_type)
+    return false unless masking_enabled?
+
+    masking_rules.dig(data_type.to_s, 'enabled') != false
+  end
+
+  def masking_pattern_for(data_type)
+    masking_rules.dig(data_type.to_s, 'pattern') || 'standard'
+  end
+
+  def user_can_bypass_masking?(user)
+    return false unless masking_enabled?
+    return false unless user
+
+    account_user = account_users.find_by(user: user)
+    return false unless account_user
+
+    # Admin bypass
+    if masking_rules['admin_bypass'] && account_user.administrator?
+      return true
+    end
+
+    # Role-based exemptions
+    exempt_roles = masking_rules['exempt_roles'] || []
+    exempt_roles.include?(account_user.role)
+  end
+
+  private
+
+  def default_masking_rules
+    {
+      'email' => { 'enabled' => true, 'pattern' => 'standard' },
+      'phone' => { 'enabled' => true, 'pattern' => 'standard' },
+      'admin_bypass' => false,  # Don't bypass for admins by default
+      'exempt_roles' => [],     # No roles exempt by default
+      'allow_reveal' => true
+    }
   end
 
   def webhook_data

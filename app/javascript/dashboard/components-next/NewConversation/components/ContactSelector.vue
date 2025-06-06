@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useMasking } from 'dashboard/composables/useMasking';
 import { INPUT_TYPES } from 'dashboard/components-next/taginput/helper/tagInputHelper.js';
 
 import TagInput from 'dashboard/components-next/taginput/TagInput.vue';
@@ -54,13 +55,14 @@ const emit = defineEmits([
 
 const i18nPrefix = 'COMPOSE_NEW_CONVERSATION.FORM.CONTACT_SELECTOR';
 const { t } = useI18n();
+const { getDisplayEmail, getDisplayPhone } = useMasking();
 
 const inputType = ref(INPUT_TYPES.EMAIL);
 
 const contactsList = computed(() => {
   return props.contacts?.map(({ name, id, thumbnail, email, ...rest }) => ({
     id,
-    label: email ? `${name} (${email})` : name,
+    label: email ? `${name} (${getDisplayEmail(email)})` : name,
     value: id,
     thumbnail: { name, src: thumbnail },
     ...rest,
@@ -73,10 +75,10 @@ const contactsList = computed(() => {
 const selectedContactLabel = computed(() => {
   const { name, email = '', phoneNumber = '' } = props.selectedContact || {};
   if (email) {
-    return `${name} (${email})`;
+    return `${name} (${getDisplayEmail(email)})`;
   }
   if (phoneNumber) {
-    return `${name} (${phoneNumber})`;
+    return `${name} (${getDisplayPhone(phoneNumber)})`;
   }
   return name || '';
 });

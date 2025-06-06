@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import Auth from 'dashboard/api/auth';
 import { useMapGetter } from 'dashboard/composables/store';
+import { useMasking } from 'dashboard/composables/useMasking';
 import { useI18n } from 'vue-i18n';
 import Avatar from 'next/avatar/Avatar.vue';
 import SidebarProfileMenuStatus from './SidebarProfileMenuStatus.vue';
@@ -22,6 +23,7 @@ defineOptions({
 });
 
 const { t } = useI18n();
+const { getDisplayEmail } = useMasking();
 
 const currentUser = useMapGetter('getCurrentUser');
 const currentUserAvailability = useMapGetter('getCurrentUserAvailability');
@@ -135,7 +137,7 @@ const allowedMenuItems = computed(() => {
             {{ currentUser.available_name }}
           </div>
           <div class="text-n-slate-11 text-xs truncate">
-            {{ currentUser.email }}
+            {{ getDisplayEmail(currentUser.email) }}
           </div>
         </div>
       </button>

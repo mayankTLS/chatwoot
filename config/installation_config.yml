@@ -319,3 +319,28 @@
   value: 'v22.0'
   locked: true
 # ------- End of Instagram Channel Related Config ------- #
+
+# ------- Data Masking Configuration ------- #
+# Note: Data masking is a premium feature that is controlled via feature flags
+# defined in config/features.yml. The actual masking configuration is done
+# per-account through the dashboard settings and stored in account.settings.
+# The following configs control audit logging for data masking events:
+- name: ENABLE_DATABASE_AUDIT_LOGS
+  display_title: 'Enable Database Audit Logs'
+  value: false
+  description: 'Enable storing audit logs for data masking events in the database'
+  type: boolean
+  locked: false
+- name: AUDIT_WEBHOOK_URL
+  display_title: 'Audit Webhook URL'
+  value:
+  description: 'Webhook URL to send audit logs for data masking events'
+  type: secret
+  locked: false
+- name: EXTERNAL_AUDIT_SERVICE_ENABLED
+  display_title: 'External Audit Service'
+  value: false
+  description: 'Enable sending audit logs to external audit service'
+  type: boolean
+  locked: false
+# ------- End of Data Masking Configuration ------- #

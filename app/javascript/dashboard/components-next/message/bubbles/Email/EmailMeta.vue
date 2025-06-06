@@ -1,9 +1,11 @@
 <script setup>
 import { computed } from 'vue';
+import { useMasking } from 'dashboard/composables/useMasking';
 import { MESSAGE_STATUS } from '../../constants';
 import { useMessageContext } from '../../provider.js';
 
 const { contentAttributes, status, sender } = useMessageContext();
+const { maskEmailListString } = useMasking();
 
 const hasError = computed(() => {
   return status.value === MESSAGE_STATUS.FAILED;
@@ -78,22 +80,22 @@ const showMeta = computed(() => {
           <span>
             {{ senderName }}
           </span>
-          &lt;{{ fromEmail[0] }}&gt;
+          &lt;{{ maskEmailListString(fromEmail[0]) }}&gt;
         </template>
         <template v-else>
-          {{ fromEmail[0] }}
+          {{ maskEmailListString(fromEmail[0]) }}
         </template>
       </div>
       <div v-if="toEmail.length">
-        {{ $t('EMAIL_HEADER.TO') }}: {{ toEmail.join(', ') }}
+        {{ $t('EMAIL_HEADER.TO') }}: {{ maskEmailListString(toEmail.join(', ')) }}
       </div>
       <div v-if="ccEmail.length">
         {{ $t('EMAIL_HEADER.CC') }}:
-        {{ ccEmail.join(', ') }}
+        {{ maskEmailListString(ccEmail.join(', ')) }}
       </div>
       <div v-if="bccEmail.length">
         {{ $t('EMAIL_HEADER.BCC') }}:
-        {{ bccEmail.join(', ') }}
+        {{ maskEmailListString(bccEmail.join(', ')) }}
       </div>
       <div v-if="subject">
         {{ $t('EMAIL_HEADER.SUBJECT') }}:

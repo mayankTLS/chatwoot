@@ -1,9 +1,17 @@
 <script>
 import Thumbnail from '../../../components/widgets/Thumbnail.vue';
+import { useMasking } from 'dashboard/composables/useMasking';
 
 export default {
   components: {
     Thumbnail,
+  },
+  setup() {
+    const { getDisplayEmail, getDisplayPhone } = useMasking();
+    return {
+      getDisplayEmail,
+      getDisplayPhone,
+    };
   },
   props: {
     name: {
@@ -43,11 +51,11 @@ export default {
       <p class="option__body">
         <span v-if="email" class="email-icon-wrap">
           <fluent-icon class="merge-contact--icon" icon="mail" size="12" />
-          {{ email }}
+          {{ getDisplayEmail(email) }}
         </span>
         <span v-if="phoneNumber" class="phone-icon-wrap">
           <fluent-icon class="merge-contact--icon" icon="call" size="12" />
-          {{ phoneNumber }}
+          {{ getDisplayPhone(phoneNumber) }}
         </span>
         <span v-if="!phoneNumber && !email">{{ '---' }}</span>
       </p>

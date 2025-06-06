@@ -169,3 +169,7 @@
 - name: crm_integration
   display_name: CRM Integration
   enabled: false
+- name: data_masking
+  display_name: Data Masking
+  enabled: true
+  help_url: https://chwt.app/hc/data-masking

@@ -1,5 +1,6 @@
 <script setup>
 import { useAlert } from 'dashboard/composables';
+import { useMasking } from 'dashboard/composables/useMasking';
 import { computed, onMounted, ref } from 'vue';
 import Thumbnail from 'dashboard/components/widgets/Thumbnail.vue';
 import { useI18n } from 'vue-i18n';
@@ -18,6 +19,7 @@ import Button from 'dashboard/components-next/button/Button.vue';
 const getters = useStoreGetters();
 const store = useStore();
 const { t } = useI18n();
+const { getDisplayEmail } = useMasking();
 
 const loading = ref({});
 const showAddPopup = ref(false);
@@ -174,7 +176,7 @@ const confirmDeletion = () => {
                   <span class="block font-medium capitalize">
                     {{ agent.name }}
                   </span>
-                  <span>{{ agent.email }}</span>
+                  <span>{{ getDisplayEmail(agent.email) }}</span>
                 </div>
               </div>
             </td>

@@ -1,11 +1,18 @@
 <script>
 import NextButton from 'dashboard/components-next/button/Button.vue';
 import Thumbnail from 'dashboard/components/widgets/Thumbnail.vue';
+import { useMasking } from 'dashboard/composables/useMasking';
 
 export default {
   components: {
     NextButton,
     Thumbnail,
+  },
+  setup() {
+    const { getDisplayEmail } = useMasking();
+    return {
+      getDisplayEmail,
+    };
   },
   props: {
     agentList: {
@@ -124,7 +131,7 @@ export default {
             </div>
           </td>
           <td>
-            {{ agent.email || '---' }}
+            {{ getDisplayEmail(agent.email) || '---' }}
           </td>
         </tr>
       </tbody>
