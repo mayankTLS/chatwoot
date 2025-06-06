@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue';
-import { useStore, useMapGetter } from 'dashboard/composables/store';
+import { useMapGetter } from 'dashboard/composables/store';
 import { useAccount } from 'dashboard/composables/useAccount';
 import {
   maskEmail as maskEmailUtil,
@@ -269,17 +269,17 @@ export const useMasking = () => {
    * @param {string} action - Action performed ('view', 'reveal', 'copy')
    * @param {Object} context - Additional context
    */
-  const logSensitiveDataAccess = (dataType, action, context = {}) => {
-    const auditPayload = {
-      dataType,
-      action,
-      context: {
-        ...context,
-        userId: currentUser.value?.id,
-        accountId: currentAccount.value?.id,
-        timestamp: new Date().toISOString(),
-      },
-    };
+  const logSensitiveDataAccess = () => {
+    // const auditPayload = {
+    //   dataType,
+    //   action,
+    //   context: {
+    //     ...context,
+    //     userId: currentUser.value?.id,
+    //     accountId: currentAccount.value?.id,
+    //     timestamp: new Date().toISOString(),
+    //   },
+    // };
 
     // Send audit log to backend
     try {

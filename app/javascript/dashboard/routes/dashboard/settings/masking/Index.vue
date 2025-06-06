@@ -107,7 +107,7 @@ onMounted(() => {
 <template>
   <FeatureToggle feature-key="data_masking">
     <SettingsLayout
-      :no-padding="true"
+      no-padding
       :breadcrumb-items="[
         {
           href: 'javascript:void(0)',
@@ -244,9 +244,11 @@ onMounted(() => {
                   }}
                 </p>
                 <p class="text-sm text-orange-600 mt-1">
-                  Note: By default, all users including administrators see
-                  masked data. Enable this option to allow administrators to see
-                  unmasked data.
+                  {{
+                    $t(
+                      'MASKING_SETTINGS.FORM.PERMISSIONS_SECTION.ADMIN_BYPASS_NOTE'
+                    )
+                  }}
                 </p>
               </div>
 
@@ -316,13 +318,17 @@ onMounted(() => {
                   <span class="font-medium">
                     {{
                       $t('MASKING_SETTINGS.FORM.PREVIEW_SECTION.EMAIL_EXAMPLE')
-                    }}:
+                    }}
                   </span>
                   <span class="ml-2 font-mono">
-                    john.doe@example.com →
+                    {{
+                      $t('MASKING_SETTINGS.FORM.PREVIEW_SECTION.EMAIL_ARROW')
+                    }}
                     {{
                       maskingSettings.masking_rules.email.pattern === 'minimal'
-                        ? 'j***@example.com'
+                        ? $t(
+                            'MASKING_SETTINGS.FORM.PREVIEW_SECTION.EMAIL_MINIMAL'
+                          )
                         : maskingSettings.masking_rules.email.pattern ===
                             'standard'
                           ? 'j***e@e***.com'
@@ -334,13 +340,17 @@ onMounted(() => {
                   <span class="font-medium">
                     {{
                       $t('MASKING_SETTINGS.FORM.PREVIEW_SECTION.PHONE_EXAMPLE')
-                    }}:
+                    }}
                   </span>
                   <span class="ml-2 font-mono">
-                    +1-555-123-4567 →
+                    {{
+                      $t('MASKING_SETTINGS.FORM.PREVIEW_SECTION.PHONE_ARROW')
+                    }}
                     {{
                       maskingSettings.masking_rules.phone.pattern === 'minimal'
-                        ? '+1 ***-***-4567'
+                        ? $t(
+                            'MASKING_SETTINGS.FORM.PREVIEW_SECTION.PHONE_MINIMAL'
+                          )
                         : maskingSettings.masking_rules.phone.pattern ===
                             'standard'
                           ? '***-***-4567'

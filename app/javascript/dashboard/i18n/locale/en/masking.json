@@ -23,6 +23,7 @@
         "TITLE": "Permissions & Access",
         "ADMIN_BYPASS_LABEL": "Allow administrators to bypass masking",
         "ADMIN_BYPASS_HELP": "Administrators will see unmasked data regardless of other settings.",
+        "ADMIN_BYPASS_NOTE": "Note: By default, all users including administrators see masked data. Enable this option to allow administrators to see unmasked data.",
         "EXEMPT_ROLES_LABEL": "Exempt roles from masking",
         "EXEMPT_ROLES_HELP": "Users with these roles will see unmasked data.",
         "ALLOW_REVEAL_LABEL": "Allow users to temporarily reveal masked data",
@@ -31,7 +32,11 @@
       "PREVIEW_SECTION": {
         "TITLE": "Preview",
         "EMAIL_EXAMPLE": "Email example",
-        "PHONE_EXAMPLE": "Phone example"
+        "EMAIL_ARROW": "john.doe@example.com →",
+        "EMAIL_MINIMAL": "j***@example.com",
+        "PHONE_EXAMPLE": "Phone example",
+        "PHONE_ARROW": "+1-555-123-4567 →",
+        "PHONE_MINIMAL": "+1 ***-***-4567"
       },
       "SUBMIT": "Update Settings",
       "ERROR": {
