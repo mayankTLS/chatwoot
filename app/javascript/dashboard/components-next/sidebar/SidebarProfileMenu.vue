@@ -4,7 +4,7 @@ import Auth from 'dashboard/api/auth';
 import { useMapGetter } from 'dashboard/composables/store';
 import { useMasking } from 'dashboard/composables/useMasking';
 import { useI18n } from 'vue-i18n';
-import Avatar from 'next/avatar/Avatar.vue';
+import Avatar from 'dashboard/components-next/avatar/Avatar.vue';
 import SidebarProfileMenuStatus from './SidebarProfileMenuStatus.vue';
 import { FEATURE_FLAGS } from 'dashboard/featureFlags';
 
@@ -13,7 +13,7 @@ import {
   DropdownBody,
   DropdownSeparator,
   DropdownItem,
-} from 'next/dropdown-menu/base';
+} from 'dashboard/components-next/dropdown-menu/base';
 import CustomBrandPolicyWrapper from '../../components/CustomBrandPolicyWrapper.vue';
 
 const emit = defineEmits(['close', 'openKeyShortcutModal']);

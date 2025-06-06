@@ -5,7 +5,7 @@ import { useAlert } from 'dashboard/composables';
 import { CONTACTS_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import { vOnClickOutside } from '@vueuse/components';
 import { useTrack } from 'dashboard/composables';
-import NextButton from 'next/button/Button.vue';
+import NextButton from 'dashboard/components-next/button/Button.vue';
 
 export default {
   components: {

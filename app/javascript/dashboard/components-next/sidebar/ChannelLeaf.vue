@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
-import Icon from 'next/icon/Icon.vue';
-import ChannelIcon from 'next/icon/ChannelIcon.vue';
+import Icon from 'dashboard/components-next/icon/Icon.vue';
+import ChannelIcon from 'dashboard/components-next/icon/ChannelIcon.vue';
 
 const props = defineProps({
   label: {

@@ -23,8 +23,8 @@ import {
 // https://tanstack.com/virtual/latest/docs/framework/vue/examples/variable
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import ChatListHeader from './ChatListHeader.vue';
-import ConversationFilter from 'next/filter/ConversationFilter.vue';
-import SaveCustomView from 'next/filter/SaveCustomView.vue';
+import ConversationFilter from 'dashboard/components-next/filter/ConversationFilter.vue';
+import SaveCustomView from 'dashboard/components-next/filter/SaveCustomView.vue';
 import ChatTypeTabs from './widgets/ChatTypeTabs.vue';
 import ConversationItem from './ConversationItem.vue';
 import DeleteCustomViews from 'dashboard/routes/dashboard/customviews/DeleteCustomViews.vue';

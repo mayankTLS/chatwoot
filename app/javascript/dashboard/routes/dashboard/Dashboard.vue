@@ -2,7 +2,7 @@
 import { defineAsyncComponent, ref } from 'vue';
 import { mapGetters } from 'vuex';
 
-import NextSidebar from 'next/sidebar/Sidebar.vue';
+import NextSidebar from 'dashboard/components-next/sidebar/Sidebar.vue';
 import WootKeyShortcutModal from 'dashboard/components/widgets/modal/WootKeyShortcutModal.vue';
 import AddAccountModal from 'dashboard/components/layout/sidebarComponents/AddAccountModal.vue';
 import AccountSelector from 'dashboard/components/layout/sidebarComponents/AccountSelector.vue';
