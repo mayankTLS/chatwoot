@@ -44,7 +44,7 @@ export default {
     @change="onTabChange()"
   >
     <option v-for="value in items" :key="value" :value="value">
-      {{ $t(`${pathPrefix}.${value}.TEXT`) }}
+      {{ $t(pathPrefix + '.' + value + '.TEXT') }}
     </option>
   </select>
 </template>

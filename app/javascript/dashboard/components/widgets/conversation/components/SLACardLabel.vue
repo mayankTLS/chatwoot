@@ -52,9 +52,9 @@ export default {
     slaStatusText() {
       const upperCaseType = this.slaStatus?.type?.toUpperCase(); // FRT, NRT, or RT
       const statusKey = this.isSlaMissed ? 'MISSED' : 'DUE';
-      const statusText = this.$t(`CONVERSATION.HEADER.SLA_STATUS.${statusKey}`);
+      const statusText = this.$t('CONVERSATION.HEADER.SLA_STATUS.' + statusKey);
 
-      return this.$t(`CONVERSATION.HEADER.SLA_STATUS.${upperCaseType}`, {
+      return this.$t('CONVERSATION.HEADER.SLA_STATUS.' + upperCaseType, {
         status: statusText,
       });
     },

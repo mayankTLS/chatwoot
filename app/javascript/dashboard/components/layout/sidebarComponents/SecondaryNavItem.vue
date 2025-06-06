@@ -196,7 +196,7 @@ export default {
       <span
         class="px-2 pt-1 my-2 text-sm font-semibold text-slate-700 dark:text-slate-200"
       >
-        {{ $t(`SIDEBAR.${menuItem.label}`) }}
+        {{ $t('SIDEBAR.' + menuItem.label) }}
       </span>
       <div v-if="menuItem.showNewButton" class="flex items-center">
         <NextButton ghost xs slate icon="i-lucide-plus" @click="onClickOpen" />
@@ -213,7 +213,7 @@ export default {
         class="min-w-[1rem] mr-1.5 rtl:mr-0 rtl:ml-1.5"
         size="14"
       />
-      {{ $t(`SIDEBAR.${menuItem.label}`) }}
+      {{ $t('SIDEBAR.' + menuItem.label) }}
       <span
         v-if="showChildCount(menuItem.count)"
         class="px-1 py-0 mx-1 rounded-md text-xxs"
@@ -264,7 +264,7 @@ export default {
                 xs
                 slate
                 icon="i-lucide-plus"
-                :label="$t(`SIDEBAR.${menuItem.newLinkTag}`)"
+                :label="$t('SIDEBAR.' + menuItem.newLinkTag)"
                 :data-testid="menuItem.dataTestid"
                 @click="e => newLinkClick(e, navigate)"
               />
