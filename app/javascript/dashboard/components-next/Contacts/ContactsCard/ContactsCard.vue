@@ -113,7 +113,11 @@ const onClickViewDetails = () => emit('showContact', props.id);
           </span>
         </div>
         <div class="flex flex-wrap items-center justify-start gap-x-3 gap-y-1">
-          <div v-if="email" class="truncate max-w-72" :title="getDisplayEmail(email)">
+          <div
+            v-if="email"
+            class="truncate max-w-72"
+            :title="getDisplayEmail(email)"
+          >
             <span class="text-sm text-n-slate-11">
               {{ getDisplayEmail(email) }}
             </span>

@@ -8,12 +8,6 @@ export default {
     NextButton,
     Thumbnail,
   },
-  setup() {
-    const { getDisplayEmail } = useMasking();
-    return {
-      getDisplayEmail,
-    };
-  },
   props: {
     agentList: {
       type: Array,
@@ -35,6 +29,12 @@ export default {
       type: String,
       default: '',
     },
+  },
+  setup() {
+    const { getDisplayEmail } = useMasking();
+    return {
+      getDisplayEmail,
+    };
   },
   data() {
     return {};

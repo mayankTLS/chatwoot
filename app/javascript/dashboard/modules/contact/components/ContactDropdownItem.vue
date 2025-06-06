@@ -6,13 +6,6 @@ export default {
   components: {
     Thumbnail,
   },
-  setup() {
-    const { getDisplayEmail, getDisplayPhone } = useMasking();
-    return {
-      getDisplayEmail,
-      getDisplayPhone,
-    };
-  },
   props: {
     name: {
       type: String,
@@ -34,6 +27,13 @@ export default {
       type: [String, Number],
       required: true,
     },
+  },
+  setup() {
+    const { getDisplayEmail, getDisplayPhone } = useMasking();
+    return {
+      getDisplayEmail,
+      getDisplayPhone,
+    };
   },
 };
 </script>
