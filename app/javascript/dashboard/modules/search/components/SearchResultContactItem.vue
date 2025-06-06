@@ -58,11 +58,17 @@ const navigateTo = computed(() => {
       <p
         class="grid items-center m-0 gap-1 text-sm grid-cols-[minmax(0,1fr)_auto_auto]"
       >
-        <span v-if="email" class="truncate text-n-slate-12" :title="getDisplayEmail(email)">
+        <span
+          v-if="email"
+          class="truncate text-n-slate-12"
+          :title="getDisplayEmail(email)"
+        >
           {{ getDisplayEmail(email) }}
         </span>
         <span v-if="phone" class="text-n-slate-10">•</span>
-        <span v-if="phone" class="text-n-slate-12">{{ getDisplayPhone(phone) }}</span>
+        <span v-if="phone" class="text-n-slate-12">{{
+          getDisplayPhone(phone)
+        }}</span>
       </p>
     </div>
   </router-link>

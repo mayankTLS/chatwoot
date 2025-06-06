@@ -87,7 +87,8 @@ const showMeta = computed(() => {
         </template>
       </div>
       <div v-if="toEmail.length">
-        {{ $t('EMAIL_HEADER.TO') }}: {{ maskEmailListString(toEmail.join(', ')) }}
+        {{ $t('EMAIL_HEADER.TO') }}:
+        {{ maskEmailListString(toEmail.join(', ')) }}
       </div>
       <div v-if="ccEmail.length">
         {{ $t('EMAIL_HEADER.CC') }}:

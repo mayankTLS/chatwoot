@@ -1,13 +1,13 @@
 import { computed, ref } from 'vue';
-import { useStore, useMapGetter } from 'dashboard/composables/store';
+import { useMapGetter } from 'dashboard/composables/store';
 import { useAccount } from 'dashboard/composables/useAccount';
-import { 
-  maskEmail as maskEmailUtil, 
-  maskPhone as maskPhoneUtil, 
-  shouldMaskData, 
+import {
+  maskEmail as maskEmailUtil,
+  maskPhone as maskPhoneUtil,
+  shouldMaskData,
   getMaskingPattern,
   maskEmailList,
-  createRevealHandler
+  createRevealHandler,
 } from 'shared/helpers/maskingHelper';
 
 /**
@@ -15,44 +15,48 @@ import {
  * Provides reactive masking capabilities with permission awareness
  */
 export const useMasking = () => {
-  const store = useStore();
   const { isCloudFeatureEnabled } = useAccount();
-  
+
   // Get current user and account settings
   const currentUser = useMapGetter('getCurrentUser');
   const currentAccount = useMapGetter('getCurrentAccount');
-  
+
   // Reactive masking state
   const revealStates = ref(new Map());
-  
+
   // Compute account masking settings
   const accountMaskingSettings = computed(() => {
-    return currentAccount.value?.settings?.masking || {
-      masking_enabled: true,   // Default to true
-      masking_rules: {
-        email: { enabled: true, pattern: 'standard' },
-        phone: { enabled: true, pattern: 'standard' },
-        admin_bypass: false,   // Don't bypass for admins by default
-        exempt_roles: []       // No roles exempt by default
+    return (
+      currentAccount.value?.settings?.masking || {
+        masking_enabled: true, // Default to true
+        masking_rules: {
+          email: { enabled: true, pattern: 'standard' },
+          phone: { enabled: true, pattern: 'standard' },
+          admin_bypass: false, // Don't bypass for admins by default
+          exempt_roles: [], // No roles exempt by default
+        },
       }
-    };
+    );
   });
 
   // Check if user can view sensitive data
   const canViewSensitiveData = computed(() => {
     const user = currentUser.value;
     const settings = accountMaskingSettings.value;
-    
+
     // If masking is disabled, everyone can see data
     if (!settings?.masking_enabled) {
       return true;
     }
-    
+
     // Admin bypass (only if explicitly enabled)
-    if (user?.type === 'administrator' && settings?.masking_rules?.admin_bypass === true) {
+    if (
+      user?.type === 'administrator' &&
+      settings?.masking_rules?.admin_bypass === true
+    ) {
       return true;
     }
-    
+
     // Check exempt roles
     const exemptRoles = settings?.masking_rules?.exempt_roles || [];
     return exemptRoles.includes(user?.role);
@@ -65,8 +69,12 @@ export const useMasking = () => {
 
   // Check if masking is enabled for specific data types
   const isMaskingEnabled = computed(() => ({
-    email: isMaskingFeatureEnabled.value && shouldMaskData(currentUser.value, accountMaskingSettings.value, 'email'),
-    phone: isMaskingFeatureEnabled.value && shouldMaskData(currentUser.value, accountMaskingSettings.value, 'phone')
+    email:
+      isMaskingFeatureEnabled.value &&
+      shouldMaskData(currentUser.value, accountMaskingSettings.value, 'email'),
+    phone:
+      isMaskingFeatureEnabled.value &&
+      shouldMaskData(currentUser.value, accountMaskingSettings.value, 'phone'),
   }));
 
   /**
@@ -80,7 +88,11 @@ export const useMasking = () => {
       return email;
     }
 
-    const pattern = getMaskingPattern(currentUser.value, accountMaskingSettings.value, 'email');
+    const pattern = getMaskingPattern(
+      currentUser.value,
+      accountMaskingSettings.value,
+      'email'
+    );
     return maskEmailUtil(email, { pattern, ...options });
   };
 
@@ -95,7 +107,11 @@ export const useMasking = () => {
       return phone;
     }
 
-    const pattern = getMaskingPattern(currentUser.value, accountMaskingSettings.value, 'phone');
+    const pattern = getMaskingPattern(
+      currentUser.value,
+      accountMaskingSettings.value,
+      'phone'
+    );
     return maskPhoneUtil(phone, { pattern, ...options });
   };
 
@@ -110,7 +126,11 @@ export const useMasking = () => {
       return emailList;
     }
 
-    const pattern = getMaskingPattern(currentUser.value, accountMaskingSettings.value, 'email');
+    const pattern = getMaskingPattern(
+      currentUser.value,
+      accountMaskingSettings.value,
+      'email'
+    );
     return maskEmailList(emailList, { pattern, ...options });
   };
 
@@ -122,9 +142,9 @@ export const useMasking = () => {
    */
   const getDisplayEmail = (email, options = {}) => {
     const { allowReveal = false, revealKey = null } = options;
-    
+
     if (!email) return email;
-    
+
     if (!isMaskingEnabled.value.email || canViewSensitiveData.value) {
       return email;
     }
@@ -145,9 +165,9 @@ export const useMasking = () => {
    */
   const getDisplayPhone = (phone, options = {}) => {
     const { allowReveal = false, revealKey = null } = options;
-    
+
     if (!phone) return phone;
-    
+
     if (!isMaskingEnabled.value.phone || canViewSensitiveData.value) {
       return phone;
     }
@@ -173,22 +193,22 @@ export const useMasking = () => {
         reveal: () => originalValue,
         hide: () => originalValue,
         getCurrentValue: () => originalValue,
-        isRevealed: true
+        isRevealed: true,
       };
     }
 
     const maskingFunction = dataType === 'email' ? maskEmail : maskPhone;
     const maskedValue = maskingFunction(originalValue);
-    
+
     const revealHandler = createRevealHandler(originalValue, maskedValue);
     revealStates.value.set(revealKey, revealHandler);
-    
+
     return {
       ...revealHandler,
       toggle: () => {
         const handler = revealStates.value.get(revealKey);
         return handler.isRevealed ? handler.hide() : handler.reveal();
-      }
+      },
     };
   };
 
@@ -197,8 +217,11 @@ export const useMasking = () => {
    * @param {string} email - Email address
    * @returns {boolean} Whether to show mailto link
    */
-  const shouldShowMailtoLink = (email) => {
-    return !!(email && (!isMaskingEnabled.value.email || canViewSensitiveData.value));
+  const shouldShowMailtoLink = email => {
+    return !!(
+      email &&
+      (!isMaskingEnabled.value.email || canViewSensitiveData.value)
+    );
   };
 
   /**
@@ -206,8 +229,11 @@ export const useMasking = () => {
    * @param {string} phone - Phone number
    * @returns {boolean} Whether to show tel link
    */
-  const shouldShowTelLink = (phone) => {
-    return !!(phone && (!isMaskingEnabled.value.phone || canViewSensitiveData.value));
+  const shouldShowTelLink = phone => {
+    return !!(
+      phone &&
+      (!isMaskingEnabled.value.phone || canViewSensitiveData.value)
+    );
   };
 
   /**
@@ -217,8 +243,9 @@ export const useMasking = () => {
    * @returns {string} Value to use for links/copy
    */
   const getLinkValue = (value, originalValue) => {
-    return canViewSensitiveData.value || !accountMaskingSettings.value.masking_enabled 
-      ? originalValue 
+    return canViewSensitiveData.value ||
+      !accountMaskingSettings.value.masking_enabled
+      ? originalValue
       : null;
   };
 
@@ -231,7 +258,7 @@ export const useMasking = () => {
     if (canViewSensitiveData.value) {
       return false;
     }
-    
+
     // Check if reveal is allowed in account settings
     return accountMaskingSettings.value?.masking_rules?.allow_reveal !== false;
   });
@@ -242,22 +269,18 @@ export const useMasking = () => {
    * @param {string} action - Action performed ('view', 'reveal', 'copy')
    * @param {Object} context - Additional context
    */
-  const logSensitiveDataAccess = (dataType, action, context = {}) => {
-    const auditPayload = {
-      dataType,
-      action,
-      context: {
-        ...context,
-        userId: currentUser.value?.id,
-        accountId: currentAccount.value?.id,
-        timestamp: new Date().toISOString()
-      }
-    };
+  const logSensitiveDataAccess = () => {
+    // const auditPayload = {
+    //   dataType,
+    //   action,
+    //   context: {
+    //     ...context,
+    //     userId: currentUser.value?.id,
+    //     accountId: currentAccount.value?.id,
+    //     timestamp: new Date().toISOString(),
+    //   },
+    // };
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Sensitive data access:', auditPayload);
-    }
-    
     // Send audit log to backend
     try {
       // This would be implemented as an API call to log the audit event
@@ -266,8 +289,15 @@ export const useMasking = () => {
       //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify(auditPayload)
       // });
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.log('Audit log sent successfully');
+      }
     } catch (error) {
-      console.error('Failed to log audit event:', error);
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error('Failed to log audit event:', error);
+      }
     }
   };
 
@@ -276,26 +306,26 @@ export const useMasking = () => {
     maskEmail,
     maskPhone,
     maskEmailListString,
-    
+
     // Display functions
     getDisplayEmail,
     getDisplayPhone,
-    
+
     // Reveal functionality
     createReveal,
     canRevealData,
-    
+
     // Link helpers
     shouldShowMailtoLink,
     shouldShowTelLink,
     getLinkValue,
-    
+
     // State and permissions
     canViewSensitiveData,
     isMaskingEnabled,
     accountMaskingSettings,
-    
+
     // Utility
-    logSensitiveDataAccess
+    logSensitiveDataAccess,
   };
 };

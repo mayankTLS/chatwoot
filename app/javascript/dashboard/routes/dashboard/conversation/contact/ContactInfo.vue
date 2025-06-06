@@ -43,14 +43,14 @@ export default {
   emits: ['panelClose'],
   setup() {
     const { isAdmin } = useAdmin();
-    const { 
-      getDisplayEmail, 
-      getDisplayPhone, 
-      shouldShowMailtoLink, 
+    const {
+      getDisplayEmail,
+      getDisplayPhone,
+      shouldShowMailtoLink,
       shouldShowTelLink,
-      getLinkValue 
+      getLinkValue,
     } = useMasking();
-    
+
     return {
       isAdmin,
       getDisplayEmail,
@@ -235,7 +235,11 @@ export default {
         </p>
         <div class="flex flex-col items-start w-full gap-2">
           <ContactInfoRow
-            :href="shouldShowMailtoLink(contact.email) ? `mailto:${getLinkValue(getDisplayEmail(contact.email), contact.email)}` : ''"
+            :href="
+              shouldShowMailtoLink(contact.email)
+                ? `mailto:${getLinkValue(getDisplayEmail(contact.email), contact.email)}`
+                : ''
+            "
             :value="getDisplayEmail(contact.email)"
             :copy-value="contact.email"
             icon="mail"
@@ -244,7 +248,11 @@ export default {
             show-copy
           />
           <ContactInfoRow
-            :href="shouldShowTelLink(contact.phone_number) ? `tel:${getLinkValue(getDisplayPhone(contact.phone_number), contact.phone_number)}` : ''"
+            :href="
+              shouldShowTelLink(contact.phone_number)
+                ? `tel:${getLinkValue(getDisplayPhone(contact.phone_number), contact.phone_number)}`
+                : ''
+            "
             :value="getDisplayPhone(contact.phone_number)"
             :copy-value="contact.phone_number"
             icon="call"
