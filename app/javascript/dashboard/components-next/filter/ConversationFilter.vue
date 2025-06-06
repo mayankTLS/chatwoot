@@ -8,7 +8,7 @@ import { CONVERSATION_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 import { useConversationFilterContext } from './provider.js';
 import { useSnakeCase } from 'dashboard/composables/useTransformKeys';
 
-import Button from 'next/button/Button.vue';
+import Button from 'dashboard/components-next/button/Button.vue';
 import ConditionRow from './ConditionRow.vue';
 
 const props = defineProps({
