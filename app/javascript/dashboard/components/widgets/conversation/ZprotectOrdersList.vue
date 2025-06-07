@@ -163,7 +163,7 @@ watch(
     <!-- Header with refresh button -->
     <div class="flex items-center justify-between mb-3">
       <h4 class="text-sm font-medium">
-        TEST: {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.TITLE') }}
+        TEST BASIC: {{ $t('CONVERSATION.HEADER.RESOLVE_ACTION') }} | ZPROTECT: {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.TITLE') }}
       </h4>
       <button
         :disabled="loading"
