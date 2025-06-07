@@ -58,10 +58,12 @@ const isShopifyFeatureEnabled = computed(
 );
 
 const store = useStore();
+const currentAccountId = useMapGetter('getCurrentAccountId');
 
 const isZprotectEnabled = computed(() => {
   // Check if ZProtect feature is enabled and environment variables are configured
-  const featureEnabled = store.getters['accounts/getAccountFeatureFlag'](
+  const featureEnabled = store.getters['accounts/isFeatureEnabledonAccount'](
+    currentAccountId.value,
     'zprotect_integration'
   );
   return featureEnabled;
