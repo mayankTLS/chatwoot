@@ -3,7 +3,7 @@ class ZprotectService
 
   base_uri ENV.fetch('ZPROTECT_API_URL', 'https://zprotect.tlslogistics.org')
   headers 'Content-Type' => 'application/json'
-  timeout 30
+  default_timeout 30
 
   class << self
     def get_customer_orders(identifier:, identifier_type:, user_id: nil)
