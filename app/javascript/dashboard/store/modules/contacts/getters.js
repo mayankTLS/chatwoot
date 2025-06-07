@@ -1,5 +1,5 @@
 import camelcaseKeys from 'camelcase-keys';
-import ContactDisplayService from '../../helper/ContactDisplayService';
+import ContactDisplayService from '../../../helper/ContactDisplayService';
 
 export const getters = {
   getContacts($state) {
