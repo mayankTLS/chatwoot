@@ -60,22 +60,8 @@ const isShopifyFeatureEnabled = computed(
 const store = useStore();
 
 const isZprotectEnabled = computed(() => {
-  // For development debugging, always show ZProtect
+  // Always return true - ZProtect should be available
   // The backend will validate if ZProtect service is actually configured
-  /* eslint-disable no-console */
-  console.log('ZProtect feature check:', {
-    nodeEnv: process.env.NODE_ENV,
-    isDevelopment: process.env.NODE_ENV === 'development',
-  });
-
-  const featureEnabled = store.getters['accounts/isFeatureEnabled'](
-    'zprotect_integration'
-  );
-
-  console.log('ZProtect feature enabled:', featureEnabled);
-  /* eslint-enable no-console */
-
-  // Always return true for now to debug the issue
   return true;
 });
 const currentChat = useMapGetter('getSelectedChat');
