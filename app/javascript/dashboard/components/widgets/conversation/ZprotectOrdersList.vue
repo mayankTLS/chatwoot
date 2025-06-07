@@ -19,9 +19,25 @@ const props = defineProps({
 
 const contact = useFunctionGetter('contacts/getContact', props.contactId);
 
-const hasSearchableInfo = computed(
-  () => !!contact.value?.email || !!contact.value?.phone_number
-);
+const hasSearchableInfo = computed(() => {
+  const hasInfo = !!contact.value?.email || !!contact.value?.phone_number;
+  console.log('Contact info check:', {
+    contactId: props.contactId,
+    contact: contact.value,
+    email: contact.value?.email,
+    phone: contact.value?.phone_number,
+    hasInfo,
+  });
+  
+  // For debugging: temporarily bypass the check if we have a contact ID
+  // This will attempt the API call even without email/phone
+  if (!hasInfo && props.contactId) {
+    console.log('No contact info but contact ID exists, allowing API call anyway for debugging');
+    return true;
+  }
+  
+  return hasInfo;
+});
 
 const orders = ref([]);
 const loading = ref(true);
@@ -37,25 +53,31 @@ const selectedOrder = ref(null);
 
 const fetchOrders = async () => {
   try {
+    console.log('Fetching ZProtect orders for contact:', props.contactId);
     loading.value = true;
     error.value = '';
 
     const response = await ZprotectAPI.getOrders(props.contactId);
+    console.log('ZProtect API response:', response);
     const data = response.data;
+    console.log('Response data:', data);
 
     if (data.success) {
       orders.value = data.orders || [];
       isMultiStore.value = !!data.multiStore;
       storeStatuses.value = data.storeStatuses || {};
       summary.value = data.summary || {};
+      console.log('Orders loaded:', orders.value.length);
     } else {
       error.value = data.error || 'Failed to fetch orders';
       orders.value = [];
+      console.log('API returned error:', error.value);
     }
   } catch (e) {
     error.value =
       e.response?.data?.error || 'Failed to connect to order service';
     orders.value = [];
+    console.log('Exception in fetchOrders:', e);
   } finally {
     loading.value = false;
   }
@@ -139,14 +161,35 @@ const hasStoreHighPriority = storeOrders => {
   );
 };
 
+// Watch for contact ID changes
 watch(
   () => props.contactId,
   () => {
+    console.log(
+      'Contact ID changed:',
+      props.contactId,
+      'hasSearchableInfo:',
+      hasSearchableInfo.value
+    );
     if (hasSearchableInfo.value) {
       fetchOrders();
+    } else {
+      console.log('No searchable contact info, skipping order fetch');
     }
   },
   { immediate: true }
+);
+
+// Also watch for contact data changes (in case contact loads after component mounts)
+watch(
+  () => contact.value,
+  (newContact) => {
+    console.log('Contact data changed:', newContact);
+    if (newContact && hasSearchableInfo.value) {
+      console.log('Contact loaded with searchable info, fetching orders');
+      fetchOrders();
+    }
+  }
 );
 </script>
 
