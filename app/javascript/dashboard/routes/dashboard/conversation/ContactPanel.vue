@@ -60,9 +60,7 @@ const isShopifyFeatureEnabled = computed(
 const store = useStore();
 
 const isZprotectEnabled = computed(() => {
-  // For now, always return true until we can debug the feature flag issue
-  // The backend will still validate if ZProtect is properly configured
-  return true;
+  return store.getters['accounts/isFeatureEnabled']('zprotect_integration');
 });
 const currentChat = useMapGetter('getSelectedChat');
 const conversationId = computed(() => props.conversationId);

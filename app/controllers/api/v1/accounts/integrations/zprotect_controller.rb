@@ -166,15 +166,11 @@ class Api::V1::Accounts::Integrations::ZprotectController < Api::V1::Accounts::B
   end
 
   def validate_zprotect_config
-    # Temporarily disable validation for development/debugging
-    # The service will still validate the API connection
-    nil
+    url = ENV.fetch('ZPROTECT_API_URL', nil)
+    key = ENV.fetch('ZPROTECT_API_KEY', nil)
+    return unless url.blank? || key.blank?
 
-    # Original validation (disabled for now):
-    # url = ENV['ZPROTECT_API_URL']
-    # key = ENV['ZPROTECT_API_KEY']
-    # return unless url.blank? || key.blank?
-    # render json: { success: false, error: 'ZProtect service not configured' }, status: :service_unavailable
+    render json: { success: false, error: 'ZProtect service not configured' }, status: :service_unavailable
   end
 
   def set_contact

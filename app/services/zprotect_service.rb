@@ -1,7 +1,7 @@
 class ZprotectService
   include HTTParty
 
-  base_uri ENV['ZPROTECT_API_URL'] || 'https://zprotect.tlslogistics.org'
+  base_uri ENV.fetch('ZPROTECT_API_URL', nil)
   headers 'Content-Type' => 'application/json'
   default_timeout 30
 
@@ -67,7 +67,7 @@ class ZprotectService
     private
 
     def build_headers(user_id = nil)
-      api_key = ENV['ZPROTECT_API_KEY'] || 'KcVRDaQgpU6h8EK'
+      api_key = ENV.fetch('ZPROTECT_API_KEY', nil)
       headers = {
         'x-auth-key' => api_key,
         'Content-Type' => 'application/json'
