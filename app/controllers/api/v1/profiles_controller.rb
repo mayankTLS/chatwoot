@@ -1,5 +1,8 @@
 class Api::V1::ProfilesController < Api::BaseController
+  include PiiMaskingConcern
+
   before_action :set_user
+  after_action :log_profile_access, only: [:show]
 
   def show; end
 
@@ -74,5 +77,9 @@ class Api::V1::ProfilesController < Api::BaseController
       :password,
       :password_confirmation
     )
+  end
+
+  def log_profile_access
+    log_pii_access('profile_view', 'user_profile', @user.id)
   end
 end

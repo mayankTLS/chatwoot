@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useContactDisplay } from 'dashboard/composables/useContactDisplay';
 
 import CardLayout from 'dashboard/components-next/CardLayout.vue';
 import ContactsForm from 'dashboard/components-next/Contacts/ContactsForm/ContactsForm.vue';
@@ -23,6 +24,7 @@ const props = defineProps({
 const emit = defineEmits(['toggle', 'updateContact', 'showContact']);
 
 const { t } = useI18n();
+const { getDisplayEmail, getDisplayPhone } = useContactDisplay();
 
 const contactsFormRef = ref(null);
 
@@ -72,6 +74,16 @@ const formattedLocation = computed(() => {
     .join(' ');
 });
 
+const displayEmail = computed(() => {
+  const contact = { email: props.email };
+  return getDisplayEmail(contact);
+});
+
+const displayPhone = computed(() => {
+  const contact = { phone_number: props.phoneNumber };
+  return getDisplayPhone(contact);
+});
+
 const handleFormUpdate = updatedData => {
   Object.assign(contactData.value, updatedData);
 };
@@ -111,14 +123,14 @@ const onClickViewDetails = () => emit('showContact', props.id);
           </span>
         </div>
         <div class="flex flex-wrap items-center justify-start gap-x-3 gap-y-1">
-          <div v-if="email" class="truncate max-w-72" :title="email">
+          <div v-if="email" class="truncate max-w-72" :title="displayEmail">
             <span class="text-sm text-n-slate-11">
-              {{ email }}
+              {{ displayEmail }}
             </span>
           </div>
           <div v-if="email" class="w-px h-3 truncate bg-n-slate-6" />
           <span v-if="phoneNumber" class="text-sm truncate text-n-slate-11">
-            {{ phoneNumber }}
+            {{ displayPhone }}
           </span>
           <div v-if="phoneNumber" class="w-px h-3 truncate bg-n-slate-6" />
           <span

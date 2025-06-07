@@ -69,6 +69,7 @@ class User < ApplicationRecord
   # validates_uniqueness_of :email, scope: :account_id
 
   validates :email, presence: true
+  validates :pii_masking_enabled, inclusion: { in: [true, false] }
 
   has_many :account_users, dependent: :destroy_async
   has_many :accounts, through: :account_users
@@ -104,6 +105,8 @@ class User < ApplicationRecord
   after_destroy :remove_macros
 
   scope :order_by_full_name, -> { order('lower(name) ASC') }
+  scope :with_pii_masking, -> { where(pii_masking_enabled: true) }
+  scope :without_pii_masking, -> { where(pii_masking_enabled: false) }
 
   before_validation do
     self.email = email.try(:downcase)

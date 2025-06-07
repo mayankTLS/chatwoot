@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import { useAlert } from 'dashboard/composables';
 import { dynamicTime } from 'shared/helpers/timeHelper';
 import { useAdmin } from 'dashboard/composables/useAdmin';
+import { useContactDisplay } from 'dashboard/composables/useContactDisplay';
 import ContactInfoRow from './ContactInfoRow.vue';
 import Thumbnail from 'dashboard/components/widgets/Thumbnail.vue';
 import SocialIcons from './SocialIcons.vue';
@@ -42,8 +43,21 @@ export default {
   emits: ['panelClose'],
   setup() {
     const { isAdmin } = useAdmin();
+    const {
+      getDisplayEmail,
+      getDisplayPhone,
+      shouldShowCopyButtons,
+      shouldAllowContactMerge,
+      isPiiMasked,
+    } = useContactDisplay();
+
     return {
       isAdmin,
+      getDisplayEmail,
+      getDisplayPhone,
+      shouldShowCopyButtons,
+      shouldAllowContactMerge,
+      isPiiMasked,
     };
   },
   data() {
@@ -169,7 +183,9 @@ export default {
       this.showMergeModal = false;
     },
     openMergeModal() {
-      this.showMergeModal = true;
+      if (this.shouldAllowContactMerge()) {
+        this.showMergeModal = true;
+      }
     },
   },
 };
@@ -221,20 +237,26 @@ export default {
         </p>
         <div class="flex flex-col items-start w-full gap-2">
           <ContactInfoRow
-            :href="contact.email ? `mailto:${contact.email}` : ''"
-            :value="contact.email"
+            :href="
+              !isPiiMasked && contact.email ? `mailto:${contact.email}` : ''
+            "
+            :value="getDisplayEmail(contact)"
             icon="mail"
             emoji="✉️"
             :title="$t('CONTACT_PANEL.EMAIL_ADDRESS')"
-            show-copy
+            :show-copy="shouldShowCopyButtons()"
           />
           <ContactInfoRow
-            :href="contact.phone_number ? `tel:${contact.phone_number}` : ''"
-            :value="contact.phone_number"
+            :href="
+              !isPiiMasked && contact.phone_number
+                ? `tel:${contact.phone_number}`
+                : ''
+            "
+            :value="getDisplayPhone(contact)"
             icon="call"
             emoji="📞"
             :title="$t('CONTACT_PANEL.PHONE_NUMBER')"
-            show-copy
+            :show-copy="shouldShowCopyButtons()"
           />
           <ContactInfoRow
             v-if="contact.identifier"
@@ -290,7 +312,7 @@ export default {
           slate
           faded
           sm
-          :disabled="uiFlags.isMerging"
+          :disabled="uiFlags.isMerging || !shouldAllowContactMerge()"
           @click="openMergeModal"
         />
         <NextButton
@@ -312,7 +334,7 @@ export default {
         @cancel="toggleEditModal"
       />
       <ContactMergeModal
-        v-if="showMergeModal"
+        v-if="showMergeModal && shouldAllowContactMerge()"
         :primary-contact="contact"
         :show="showMergeModal"
         @close="closeMergeModal"

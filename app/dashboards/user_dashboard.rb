@@ -36,6 +36,7 @@ class UserDashboard < Administrate::BaseDashboard
     updated_at: Field::DateTime,
     pubsub_token: Field::String,
     type: Field::Select.with_options(collection: [nil, 'SuperAdmin']),
+    pii_masking_enabled: Field::Boolean,
     accounts: CountField,
     access_token: Field::HasOne
   }.freeze
@@ -52,6 +53,7 @@ class UserDashboard < Administrate::BaseDashboard
     email
     accounts
     type
+    pii_masking_enabled
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -64,6 +66,7 @@ class UserDashboard < Administrate::BaseDashboard
     type
     display_name
     email
+    pii_masking_enabled
     created_at
     updated_at
     confirmed_at
@@ -82,6 +85,7 @@ class UserDashboard < Administrate::BaseDashboard
     password
     confirmed_at
     type
+    pii_masking_enabled
   ].freeze
 
   # COLLECTION_FILTERS
