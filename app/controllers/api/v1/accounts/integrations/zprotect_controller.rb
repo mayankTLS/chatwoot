@@ -1,4 +1,4 @@
-class Api::V1::Accounts::ZprotectController < Api::V1::Accounts::BaseController
+class Api::V1::Accounts::Integrations::ZprotectController < Api::V1::Accounts::BaseController
   before_action :check_authorization
   before_action :validate_zprotect_config
   before_action :set_contact, only: [:orders]
@@ -168,8 +168,8 @@ class Api::V1::Accounts::ZprotectController < Api::V1::Accounts::BaseController
   def validate_zprotect_config
     # Temporarily disable validation for development/debugging
     # The service will still validate the API connection
-    return
-    
+    nil
+
     # Original validation (disabled for now):
     # url = ENV['ZPROTECT_API_URL']
     # key = ENV['ZPROTECT_API_KEY']
