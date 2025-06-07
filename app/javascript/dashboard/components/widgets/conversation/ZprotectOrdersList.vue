@@ -1,6 +1,7 @@
 <script setup>
+/* eslint-disable no-console */
 import { ref, watch, computed, nextTick } from 'vue';
-// import { useI18n } from 'vue-i18n'; // Disabled for now as we use $t in template
+import { useI18n } from 'vue-i18n';
 import { useFunctionGetter } from 'dashboard/composables/store';
 import Spinner from 'dashboard/components-next/spinner/Spinner.vue';
 import ZprotectAPI from '../../../api/integrations/zprotect';
@@ -15,7 +16,7 @@ const props = defineProps({
   },
 });
 
-// const { t } = useI18n(); // Disabled for now as we use $t in template
+const { t } = useI18n();
 
 const contact = useFunctionGetter('contacts/getContact', props.contactId);
 
@@ -28,14 +29,16 @@ const hasSearchableInfo = computed(() => {
     phone: contact.value?.phone_number,
     hasInfo,
   });
-  
+
   // For debugging: temporarily bypass the check if we have a contact ID
   // This will attempt the API call even without email/phone
   if (!hasInfo && props.contactId) {
-    console.log('No contact info but contact ID exists, allowing API call anyway for debugging');
+    console.log(
+      'No contact info but contact ID exists, allowing API call anyway for debugging'
+    );
     return true;
   }
-  
+
   return hasInfo;
 });
 
@@ -183,7 +186,7 @@ watch(
 // Also watch for contact data changes (in case contact loads after component mounts)
 watch(
   () => contact.value,
-  (newContact) => {
+  newContact => {
     console.log('Contact data changed:', newContact);
     if (newContact && hasSearchableInfo.value) {
       console.log('Contact loaded with searchable info, fetching orders');
@@ -198,12 +201,12 @@ watch(
     <!-- Header with refresh button -->
     <div class="flex items-center justify-between mb-3">
       <h4 class="text-sm font-medium">
-        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.TITLE') }}
+        {{ t('CONVERSATION.ZPROTECT.ORDERS_LIST.TITLE') }}
       </h4>
       <button
         :disabled="loading"
         class="p-1 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 disabled:opacity-50"
-        :title="$t('CONVERSATION.ZPROTECT.ORDERS_LIST.REFRESH_BUTTON')"
+        :title="t('CONVERSATION.ZPROTECT.ORDERS_LIST.REFRESH_BUTTON')"
         @click="refreshOrders"
       >
         <svg
@@ -227,7 +230,7 @@ watch(
     <div v-if="loading" class="flex items-center justify-center py-8">
       <Spinner size="sm" />
       <span class="ml-2 text-sm text-slate-500">{{
-        $t('CONVERSATION.ZPROTECT.ORDERS_LIST.LOADING')
+        t('CONVERSATION.ZPROTECT.ORDERS_LIST.LOADING')
       }}</span>
     </div>
 
@@ -267,7 +270,7 @@ watch(
             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.NO_CONTACT_INFO') }}
+        {{ t('CONVERSATION.ZPROTECT.ORDERS_LIST.NO_CONTACT_INFO') }}
       </div>
     </div>
 
@@ -287,7 +290,7 @@ watch(
             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
           />
         </svg>
-        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.NO_ORDERS') }}
+        {{ t('CONVERSATION.ZPROTECT.ORDERS_LIST.NO_ORDERS') }}
       </div>
     </div>
 
@@ -299,7 +302,7 @@ watch(
       <div class="text-sm">
         <div class="font-medium mb-1">
           {{
-            $t('CONVERSATION.ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
+            t('CONVERSATION.ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
               orderCount: orders.length,
               storeCount: summary.totalStores,
             })
@@ -307,7 +310,7 @@ watch(
         </div>
         <div class="text-slate-600 dark:text-slate-400 text-xs">
           {{
-            $t('CONVERSATION.ZPROTECT.ORDERS_LIST.STORE_STATUS', {
+            t('CONVERSATION.ZPROTECT.ORDERS_LIST.STORE_STATUS', {
               successful: summary.successfulStores,
               failed: summary.failedStores || 0,
             })
@@ -341,12 +344,12 @@ watch(
                 v-if="hasStoreHighPriority(storeOrders)"
                 class="ml-2 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"
               >
-                {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.PRIORITY_ORDERS') }}
+                {{ t('CONVERSATION.ZPROTECT.ORDERS_LIST.PRIORITY_ORDERS') }}
               </span>
             </div>
             <span class="text-xs text-slate-500">
               {{
-                $t('CONVERSATION.ZPROTECT.ORDERS_LIST.ORDER_COUNT', {
+                t('CONVERSATION.ZPROTECT.ORDERS_LIST.ORDER_COUNT', {
                   count: storeOrders.length,
                 })
               }}
