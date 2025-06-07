@@ -10,6 +10,7 @@ import Button from 'dashboard/components-next/button/Button.vue';
 import ContactLabels from 'dashboard/components-next/Contacts/ContactLabels/ContactLabels.vue';
 import ContactsForm from 'dashboard/components-next/Contacts/ContactsForm/ContactsForm.vue';
 import ConfirmContactDeleteDialog from 'dashboard/components-next/Contacts/ContactsForm/ConfirmContactDeleteDialog.vue';
+import { usePiiProtectedActions } from 'dashboard/composables/usePiiProtectedActions';
 
 const props = defineProps({
   selectedContact: {
@@ -22,6 +23,7 @@ const emit = defineEmits(['goToContactsList']);
 
 const { t } = useI18n();
 const store = useStore();
+const { isPiiMasked } = usePiiProtectedActions();
 
 const confirmDeleteContactDialogRef = ref(null);
 
@@ -167,6 +169,7 @@ const handleAvatarDelete = async () => {
         @update="handleFormUpdate"
       />
       <Button
+        v-if="!isPiiMasked"
         :label="t('CONTACTS_LAYOUT.CARD.EDIT_DETAILS_FORM.UPDATE_BUTTON')"
         size="sm"
         :is-loading="isUpdating"
@@ -175,6 +178,7 @@ const handleAvatarDelete = async () => {
       />
     </div>
     <div
+      v-if="!isPiiMasked"
       class="flex flex-col items-start w-full gap-4 pt-6 border-t border-n-strong"
     >
       <div class="flex flex-col gap-2">

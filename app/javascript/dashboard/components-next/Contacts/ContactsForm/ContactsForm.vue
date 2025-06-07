@@ -133,12 +133,23 @@ const countryOptions = computed(() =>
 );
 
 const editDetailsForm = computed(() =>
-  Object.keys(FORM_CONFIG).map(key => ({
-    key,
-    placeholder: t(
-      `CONTACTS_LAYOUT.CARD.EDIT_DETAILS_FORM.FORM.${key}.PLACEHOLDER`
-    ),
-  }))
+  Object.keys(FORM_CONFIG)
+    .filter(key => {
+      // Hide EMAIL_ADDRESS and PHONE_NUMBER for PII-masked users
+      if (
+        isPiiMasked.value &&
+        ['EMAIL_ADDRESS', 'PHONE_NUMBER'].includes(key)
+      ) {
+        return false;
+      }
+      return true;
+    })
+    .map(key => ({
+      key,
+      placeholder: t(
+        `CONTACTS_LAYOUT.CARD.EDIT_DETAILS_FORM.FORM.${key}.PLACEHOLDER`
+      ),
+    }))
 );
 
 const socialProfilesForm = computed(() =>
