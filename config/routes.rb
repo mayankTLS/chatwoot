@@ -264,6 +264,15 @@ Rails.application.routes.draw do
                 get :linked_issues
               end
             end
+            resource :zprotect, controller: 'zprotect', only: [] do
+              collection do
+                get :orders
+                post 'orders/:order_id/cancel', action: :cancel_order
+                post 'orders/:order_id/refund', action: :refund_order
+                get :health
+                post 'orders/cache/invalidate', action: :invalidate_cache
+              end
+            end
           end
           resources :working_hours, only: [:update]
 

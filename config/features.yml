@@ -172,3 +172,6 @@
 - name: contact_pii_masking
   display_name: Contact PII Masking
   enabled: true
+- name: zprotect_integration
+  display_name: ZProtect Order Management
+  enabled: true

@@ -10,6 +10,7 @@ export const DEFAULT_CONVERSATION_SIDEBAR_ITEMS_ORDER = Object.freeze([
   { name: 'previous_conversation' },
   { name: 'conversation_participants' },
   { name: 'shopify_orders' },
+  { name: 'zprotect_orders' },
 ]);
 
 export const DEFAULT_CONTACT_SIDEBAR_ITEMS_ORDER = Object.freeze([

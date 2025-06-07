@@ -299,7 +299,8 @@
       "CONTACT_ATTRIBUTES": "Contact Attributes",
       "PREVIOUS_CONVERSATION": "Previous Conversations",
       "MACROS": "Macros",
-      "SHOPIFY_ORDERS": "Shopify Orders"
+      "SHOPIFY_ORDERS": "Shopify Orders",
+      "ZPROTECT_ORDERS": "Order Management"
     },
     "SHOPIFY": {
       "ORDER_ID": "Order #{id}",
@@ -385,5 +386,93 @@
   },
   "GALLERY_VIEW": {
     "ERROR_DOWNLOADING": "Unable to download attachment. Please try again"
+  },
+  "ZPROTECT_ORDERS": "Order Management",
+  "ZPROTECT": {
+    "CANCEL_MODAL": {
+      "TITLE": "Cancel Order",
+      "WARNING": {
+        "TITLE": "Are you sure you want to cancel this order?",
+        "MESSAGE": "This action cannot be undone. The customer will be notified of the cancellation."
+      },
+      "REASON_LABEL": "Reason for Cancellation",
+      "REFUND_LABEL": "Refund customer automatically",
+      "RESTOCK_LABEL": "Restock items to inventory",
+      "STAFF_NOTE_LABEL": "Internal Note (Optional)",
+      "STAFF_NOTE_PLACEHOLDER": "Add internal notes about the cancellation...",
+      "CANCEL_BUTTON": "Cancel",
+      "CONFIRM_BUTTON": "Cancel Order",
+      "LOADING_BUTTON": "Cancelling..."
+    },
+    "REFUND_MODAL": {
+      "TITLE": "Process Refund",
+      "WARNING": {
+        "TITLE": "Process refund for selected items?",
+        "MESSAGE": "This will issue a refund to the customer's original payment method."
+      },
+      "SELECT_ITEMS": "Select items to refund:",
+      "QUANTITY_LABEL": "Qty:",
+      "REFUND_NOTE_LABEL": "Refund Note (Optional)",
+      "REFUND_NOTE_PLACEHOLDER": "Add a note about this refund...",
+      "RESTOCK_LABEL": "Restock refunded items",
+      "TOTAL_LABEL": "Refund Total:",
+      "NO_ITEMS": {
+        "TITLE": "No items available for refund",
+        "MESSAGE": "All items have already been refunded."
+      },
+      "REFUNDABLE_ITEMS": "{count} refundable item | {count} refundable items",
+      "SELECTED_TOTAL": "Selected Total",
+      "SEPARATOR": "•",
+      "AVAILABLE_FOR_REFUND": "available for refund",
+      "LINE_TOTAL": "Line Total",
+      "ITEMS_SELECTED": "{count} item selected | {count} items selected",
+      "NO_ITEMS_SELECTED": "No items selected",
+      "CANCEL_BUTTON": "Cancel",
+      "CONFIRM_BUTTON": "Process Refund",
+      "LOADING_BUTTON": "Processing..."
+    },
+    "ORDERS_LIST": {
+      "TITLE": "Order History",
+      "LOADING": "Loading orders...",
+      "ERROR": "Failed to load orders",
+      "NO_ORDERS": "No orders found for this customer",
+      "NO_CONTACT_INFO": "Contact needs email or phone number",
+      "PRIORITY_ORDERS": "Priority Orders",
+      "ORDERS_SUMMARY": "{orderCount} order | {orderCount} orders across {storeCount} store | {storeCount} stores",
+      "STORE_STATUS": "{successful} successful, {failed} failed",
+      "ORDER_COUNT": "{count} order | {count} orders",
+      "RETRY_BUTTON": "Retry",
+      "REFRESH_BUTTON": "Refresh Orders",
+      "STORE_LABEL": "Store:"
+    },
+    "ORDER_ITEM": {
+      "ORDER_NUMBER": "Order",
+      "ORDER_PREFIX": " #",
+      "SEPARATOR": ": ",
+      "CREATED_AT": "Created",
+      "TOTAL": "Total",
+      "STATUS": "Status",
+      "LINE_ITEMS": "Items",
+      "TRACKING": "Tracking",
+      "EACH": "each",
+      "TAXES": "Taxes",
+      "DISCOUNT": "Discount",
+      "DISCOUNT_PREFIX": "-",
+      "SHIPPING": "Shipping",
+      "REFUNDED": "refunded",
+      "AVAILABLE": "available",
+      "OPEN_PAREN": "(",
+      "CLOSE_PAREN": ")",
+      "CANCEL_BUTTON": "Cancel Order",
+      "REFUND_BUTTON": "Process Refund",
+      "VIEW_DETAILS": "View Details",
+      "HIDE_DETAILS": "Hide Details"
+    },
+    "REASONS": {
+      "CUSTOMER": "Customer requested",
+      "INVENTORY": "Inventory issues", 
+      "FRAUD": "Fraud concern",
+      "OTHER": "Other"
+    }
   }
 }

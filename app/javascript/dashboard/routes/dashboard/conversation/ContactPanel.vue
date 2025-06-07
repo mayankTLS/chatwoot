@@ -20,6 +20,7 @@ import CustomAttributes from './customAttributes/CustomAttributes.vue';
 import Draggable from 'vuedraggable';
 import MacrosList from './Macros/List.vue';
 import ShopifyOrdersList from '../../../components/widgets/conversation/ShopifyOrdersList.vue';
+import ZprotectOrdersList from '../../../components/widgets/conversation/ZprotectOrdersList.vue';
 
 const props = defineProps({
   conversationId: {
@@ -57,6 +58,14 @@ const isShopifyFeatureEnabled = computed(
 );
 
 const store = useStore();
+
+const isZprotectEnabled = computed(() => {
+  // Check if ZProtect feature is enabled and environment variables are configured
+  const featureEnabled = store.getters['accounts/getAccountFeatureFlag'](
+    'zprotect_integration'
+  );
+  return featureEnabled;
+});
 const currentChat = useMapGetter('getSelectedChat');
 const conversationId = computed(() => props.conversationId);
 const conversationMetadataGetter = useMapGetter(
@@ -253,6 +262,23 @@ onMounted(() => {
                 "
               >
                 <ShopifyOrdersList :contact-id="contactId" />
+              </AccordionItem>
+            </div>
+            <div
+              v-else-if="
+                element.name === 'zprotect_orders' && isZprotectEnabled
+              "
+            >
+              <AccordionItem
+                :title="$t('CONVERSATION_SIDEBAR.ACCORDION.ZPROTECT_ORDERS')"
+                :is-open="isContactSidebarItemOpen('is_zprotect_orders_open')"
+                compact
+                @toggle="
+                  value =>
+                    toggleSidebarUIState('is_zprotect_orders_open', value)
+                "
+              >
+                <ZprotectOrdersList :contact-id="contactId" />
               </AccordionItem>
             </div>
             <div v-else-if="element.name === 'contact_notes'">

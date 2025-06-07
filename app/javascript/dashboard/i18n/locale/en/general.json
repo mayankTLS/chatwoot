@@ -1,6 +1,8 @@
 {
   "GENERAL": {
     "SHOWING_RESULTS": "Showing {firstIndex}-{lastIndex} of {totalCount} items",
+    "SELECT_ALL": "Select All",
+    "CLEAR_ALL": "Clear All",
     "PHONE_INPUT": {
       "PLACEHOLDER": "Search",
       "EMPTY_STATE": "No results found"
