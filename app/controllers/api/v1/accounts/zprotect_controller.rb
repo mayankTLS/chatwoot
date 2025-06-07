@@ -30,7 +30,7 @@ class Api::V1::Accounts::ZprotectController < Api::V1::Accounts::BaseController
         error: "Invalid request: #{e.message}",
         orders: []
       }, status: :bad_request
-    rescue SecurityError => e
+    rescue SecurityError
       render json: {
         success: false,
         error: 'Authentication failed with ZProtect service',
@@ -67,7 +67,7 @@ class Api::V1::Accounts::ZprotectController < Api::V1::Accounts::BaseController
       success: false,
       error: "Invalid request: #{e.message}"
     }, status: :bad_request
-  rescue SecurityError => e
+  rescue SecurityError
     render json: {
       success: false,
       error: 'Authentication failed with ZProtect service'
@@ -101,7 +101,7 @@ class Api::V1::Accounts::ZprotectController < Api::V1::Accounts::BaseController
       success: false,
       error: "Invalid request: #{e.message}"
     }, status: :bad_request
-  rescue SecurityError => e
+  rescue SecurityError
     render json: {
       success: false,
       error: 'Authentication failed with ZProtect service'
@@ -177,7 +177,7 @@ class Api::V1::Accounts::ZprotectController < Api::V1::Accounts::BaseController
   def set_contact
     contact_id = params[:contact_id] || params[:contactId]
 
-    return unless contact_id.present?
+    return if contact_id.blank?
 
     @contact = current_account.contacts.find_by(id: contact_id)
 

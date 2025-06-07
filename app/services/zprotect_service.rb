@@ -166,7 +166,7 @@ class ZprotectService
 
       refund_items.each do |item|
         raise ArgumentError, 'Line item ID is required' if item[:line_item_id].blank?
-        raise ArgumentError, 'Quantity must be greater than 0' unless item[:quantity].to_i > 0
+        raise ArgumentError, 'Quantity must be greater than 0' unless item[:quantity].to_i.positive?
       end
     end
 
