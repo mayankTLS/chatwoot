@@ -256,33 +256,34 @@ watch(
       </div>
     </div>
 
-    <!-- Multi-store summary -->
-    <div
-      v-else-if="isMultiStore && summary.totalStores"
-      class="mb-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"
-    >
-      <div class="text-sm">
-        <div class="font-medium mb-1">
-          {{
-            $t('ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
-              orderCount: orders.length,
-              storeCount: summary.totalStores,
-            })
-          }}
-        </div>
-        <div class="text-slate-600 dark:text-slate-400 text-xs">
-          {{
-            $t('ZPROTECT.ORDERS_LIST.STORE_STATUS', {
-              successful: summary.successfulStores,
-              failed: summary.failedStores || 0,
-            })
-          }}
+    <!-- Orders content -->
+    <div v-else class="space-y-4">
+      <!-- Multi-store summary -->
+      <div
+        v-if="isMultiStore && summary.totalStores"
+        class="mb-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"
+      >
+        <div class="text-sm">
+          <div class="font-medium mb-1">
+            {{
+              $t('ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
+                orderCount: orders.length,
+                storeCount: summary.totalStores,
+              })
+            }}
+          </div>
+          <div class="text-slate-600 dark:text-slate-400 text-xs">
+            {{
+              $t('ZPROTECT.ORDERS_LIST.STORE_STATUS', {
+                successful: summary.successfulStores,
+                failed: summary.failedStores || 0,
+              })
+            }}
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Orders by store -->
-    <div v-else class="space-y-4">
+      <!-- Orders by store -->
       <div
         v-for="(storeOrders, storeName) in ordersByStore"
         :key="storeName"
