@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed, nextTick, getCurrentInstance } from 'vue';
+import { ref, watch, computed, nextTick } from 'vue';
 import { useFunctionGetter } from 'dashboard/composables/store';
 import Spinner from 'dashboard/components-next/spinner/Spinner.vue';
 import ZprotectAPI from '../../../api/integrations/zprotect';
@@ -13,10 +13,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-// Get access to the global $t function
-const instance = getCurrentInstance();
-const { $t } = instance.appContext.app.config.globalProperties;
 
 const contact = useFunctionGetter('contacts/getContact', props.contactId);
 
@@ -167,7 +163,7 @@ watch(
     <!-- Header with refresh button -->
     <div class="flex items-center justify-between mb-3">
       <h4 class="text-sm font-medium">
-        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.TITLE') }}
+        TEST: {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.TITLE') }}
       </h4>
       <button
         :disabled="loading"
@@ -267,12 +263,7 @@ watch(
     >
       <div class="text-sm">
         <div class="font-medium mb-1">
-          {{
-            $t('CONVERSATION.ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
-              orderCount: orders.length,
-              storeCount: summary.totalStores,
-            })
-          }}
+          HARDCODED TEST - Orders Summary
         </div>
         <div class="text-slate-600 dark:text-slate-400 text-xs">
           {{
