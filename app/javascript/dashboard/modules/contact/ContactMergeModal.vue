@@ -1,6 +1,7 @@
 <script>
 import { useAlert, useTrack } from 'dashboard/composables';
 import MergeContact from 'dashboard/modules/contact/components/MergeContact.vue';
+import { usePiiProtectedActions } from 'dashboard/composables/usePiiProtectedActions';
 
 import ContactAPI from 'dashboard/api/contacts';
 
@@ -20,6 +21,11 @@ export default {
     },
   },
   emits: ['close', 'update:show'],
+  setup() {
+    const { canMergeContacts, getPiiProtectionMessage } =
+      usePiiProtectedActions();
+    return { canMergeContacts, getPiiProtectionMessage };
+  },
   data() {
     return {
       isSearching: false,
@@ -62,6 +68,11 @@ export default {
       }
     },
     async onMergeContacts(parentContactId) {
+      if (!this.canMergeContacts) {
+        useAlert(this.getPiiProtectionMessage());
+        return;
+      }
+
       useTrack(CONTACTS_EVENTS.MERGED_CONTACTS);
       try {
         await this.$store.dispatch('contacts/merge', {
@@ -85,7 +96,16 @@ export default {
       :header-content="$t('MERGE_CONTACTS.DESCRIPTION')"
     />
 
+    <div v-if="!canMergeContacts" class="p-6">
+      <div
+        class="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm"
+      >
+        {{ getPiiProtectionMessage() }}
+      </div>
+    </div>
+
     <MergeContact
+      v-else
       :primary-contact="primaryContact"
       :is-searching="isSearching"
       :is-merging="uiFlags.isMerging"

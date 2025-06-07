@@ -6,6 +6,7 @@ import { useStore, useMapGetter } from 'dashboard/composables/store';
 import { debounce } from '@chatwoot/utils';
 import { useUISettings } from 'dashboard/composables/useUISettings';
 import filterQueryGenerator from 'dashboard/helper/filterQueryGenerator';
+import { usePiiProtectedActions } from 'dashboard/composables/usePiiProtectedActions';
 
 import ContactsListLayout from 'dashboard/components-next/Contacts/ContactsListLayout.vue';
 import ContactsList from 'dashboard/components-next/Contacts/Pages/ContactsList.vue';
@@ -21,6 +22,8 @@ const router = useRouter();
 const { t } = useI18n();
 
 const { updateUISettings, uiSettings } = useUISettings();
+const { isPiiMasked, canCreateContacts, getPiiProtectionMessage } =
+  usePiiProtectedActions();
 
 const contacts = useMapGetter('contacts/getContactsList');
 const uiFlags = useMapGetter('contacts/getUIFlags');
@@ -194,6 +197,7 @@ const handleSort = async ({ sort, order }) => {
 };
 
 const createContact = async contact => {
+  if (!canCreateContacts.value) return;
   await store.dispatch('contacts/create', contact);
 };
 
@@ -246,6 +250,12 @@ onMounted(async () => {
   <div
     class="flex flex-col justify-between flex-1 h-full m-0 overflow-auto bg-n-background"
   >
+    <div
+      v-if="isPiiMasked"
+      class="mx-4 mt-4 p-3 bg-n-amber-2 border border-n-amber-6 rounded-lg text-n-amber-11 text-sm"
+    >
+      {{ getPiiProtectionMessage() }}
+    </div>
     <ContactsListLayout
       :search-value="searchValue"
       :header-title="headerTitle"
@@ -277,7 +287,12 @@ onMounted(async () => {
           class="pt-14"
           :title="t('CONTACTS_LAYOUT.EMPTY_STATE.TITLE')"
           :subtitle="t('CONTACTS_LAYOUT.EMPTY_STATE.SUBTITLE')"
-          :button-label="t('CONTACTS_LAYOUT.EMPTY_STATE.BUTTON_LABEL')"
+          :button-label="
+            canCreateContacts
+              ? t('CONTACTS_LAYOUT.EMPTY_STATE.BUTTON_LABEL')
+              : ''
+          "
+          :disabled="!canCreateContacts"
           @create="createContact"
         />
 

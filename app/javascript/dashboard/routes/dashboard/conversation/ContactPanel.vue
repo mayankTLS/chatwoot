@@ -6,6 +6,7 @@ import {
   useStore,
 } from 'dashboard/composables/store';
 import { useUISettings } from 'dashboard/composables/useUISettings';
+import { usePiiProtectedActions } from 'dashboard/composables/usePiiProtectedActions';
 
 import AccordionItem from 'dashboard/components/Accordion/AccordionItem.vue';
 import ContactConversations from './ContactConversations.vue';
@@ -41,6 +42,8 @@ const {
   conversationSidebarItemsOrder,
   toggleSidebarUIState,
 } = useUISettings();
+
+const { isPiiMasked, getPiiProtectionMessage } = usePiiProtectedActions();
 
 const dragging = ref(false);
 const conversationSidebarItems = ref([]);
@@ -107,6 +110,12 @@ onMounted(() => {
 
 <template>
   <div class="w-full">
+    <div
+      v-if="isPiiMasked"
+      class="mx-4 mb-4 p-3 bg-n-amber-2 border border-n-amber-6 rounded-lg text-n-amber-11 text-sm"
+    >
+      {{ getPiiProtectionMessage() }}
+    </div>
     <ContactInfo
       :contact="contact"
       :channel-type="channelType"

@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useAlert } from 'dashboard/composables';
 import { useStore, useMapGetter } from 'dashboard/composables/store';
 import { useRoute, useRouter } from 'vue-router';
+import { usePiiProtectedActions } from 'dashboard/composables/usePiiProtectedActions';
 
 import ContactsDetailsLayout from 'dashboard/components-next/Contacts/ContactsDetailsLayout.vue';
 import Spinner from 'dashboard/components-next/spinner/Spinner.vue';
@@ -35,6 +36,12 @@ const showSpinner = computed(
 );
 
 const { t } = useI18n();
+const {
+  isPiiMasked,
+  canEditContacts,
+  canMergeContacts,
+  getPiiProtectionMessage,
+} = usePiiProtectedActions();
 
 const CONTACT_TABS_OPTIONS = [
   { key: 'ATTRIBUTES', value: 'attributes' },
@@ -44,7 +51,10 @@ const CONTACT_TABS_OPTIONS = [
 ];
 
 const tabs = computed(() => {
-  return CONTACT_TABS_OPTIONS.map(tab => ({
+  return CONTACT_TABS_OPTIONS.filter(tab => {
+    if (tab.value === 'merge' && !canMergeContacts.value) return false;
+    return true;
+  }).map(tab => ({
     label: t(`CONTACTS_LAYOUT.SIDEBAR.TABS.${tab.key}`),
     value: tab.value,
   }));
@@ -91,6 +101,11 @@ const fetchAttributes = () => {
 };
 
 const toggleContactBlock = async isBlocked => {
+  if (!canEditContacts.value) {
+    useAlert(getPiiProtectionMessage());
+    return;
+  }
+
   const ALERT_MESSAGES = {
     success: {
       block: t('CONTACTS_LAYOUT.HEADER.ACTIONS.BLOCK_SUCCESS_MESSAGE'),
@@ -129,12 +144,19 @@ onMounted(() => {
   <div
     class="flex flex-col justify-between flex-1 h-full m-0 overflow-auto bg-n-background"
   >
+    <div
+      v-if="isPiiMasked"
+      class="mx-4 mt-4 p-3 bg-n-amber-2 border border-n-amber-6 rounded-lg text-n-amber-11 text-sm"
+    >
+      {{ getPiiProtectionMessage() }}
+    </div>
     <ContactsDetailsLayout
       :button-label="$t('CONTACTS_LAYOUT.HEADER.SEND_MESSAGE')"
       :selected-contact="selectedContact"
       is-detail-view
       :show-pagination-footer="false"
       :is-updating="isUpdatingContact"
+      :disable-actions="isPiiMasked"
       @go-to-contacts-list="goToContactsList"
       @toggle-block="toggleContactBlock"
     >
@@ -147,6 +169,7 @@ onMounted(() => {
       <ContactDetails
         v-else-if="selectedContact"
         :selected-contact="selectedContact"
+        :read-only="isPiiMasked"
         @go-to-contacts-list="goToContactsList"
       />
       <template #sidebar>
@@ -168,8 +191,9 @@ onMounted(() => {
           <ContactCustomAttributes
             v-if="activeTab === 'attributes'"
             :selected-contact="selectedContact"
+            :read-only="isPiiMasked"
           />
-          <ContactNotes v-if="activeTab === 'notes'" />
+          <ContactNotes v-if="activeTab === 'notes'" :read-only="isPiiMasked" />
           <ContactHistory v-if="activeTab === 'history'" />
           <ContactMerge
             v-if="activeTab === 'merge'"

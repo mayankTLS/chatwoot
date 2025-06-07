@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useContactDisplay } from 'dashboard/composables/useContactDisplay';
+import { usePiiProtectedActions } from 'dashboard/composables/usePiiProtectedActions';
 
 import CardLayout from 'dashboard/components-next/CardLayout.vue';
 import ContactsForm from 'dashboard/components-next/Contacts/ContactsForm/ContactsForm.vue';
@@ -25,6 +26,7 @@ const emit = defineEmits(['toggle', 'updateContact', 'showContact']);
 
 const { t } = useI18n();
 const { getDisplayEmail, getDisplayPhone } = useContactDisplay();
+const { isPiiMasked, canEditContacts } = usePiiProtectedActions();
 
 const contactsFormRef = ref(null);
 
@@ -89,6 +91,7 @@ const handleFormUpdate = updatedData => {
 };
 
 const handleUpdateContact = () => {
+  if (!canEditContacts.value) return;
   emit('updateContact', contactData.value);
 };
 
@@ -142,7 +145,11 @@ const onClickViewDetails = () => emit('showContact', props.id);
           </span>
           <div v-if="countryDetails" class="w-px h-3 truncate bg-n-slate-6" />
           <Button
-            :label="t('CONTACTS_LAYOUT.CARD.VIEW_DETAILS')"
+            :label="
+              isPiiMasked
+                ? t('CONTACTS_LAYOUT.CARD.VIEW_DETAILS') + ' (Limited)'
+                : t('CONTACTS_LAYOUT.CARD.VIEW_DETAILS')
+            "
             variant="link"
             size="xs"
             @click="onClickViewDetails"
@@ -156,6 +163,7 @@ const onClickViewDetails = () => emit('showContact', props.id);
       variant="ghost"
       color="slate"
       size="xs"
+      :disabled="isPiiMasked"
       :class="{ 'rotate-180': isExpanded }"
       @click="onClickExpand"
     />
@@ -174,10 +182,12 @@ const onClickViewDetails = () => emit('showContact', props.id);
             <ContactsForm
               ref="contactsFormRef"
               :contact-data="contactData"
+              :read-only="isPiiMasked"
               @update="handleFormUpdate"
             />
             <div>
               <Button
+                v-if="canEditContacts"
                 :label="
                   t('CONTACTS_LAYOUT.CARD.EDIT_DETAILS_FORM.UPDATE_BUTTON')
                 "

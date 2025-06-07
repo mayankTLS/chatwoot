@@ -222,6 +222,7 @@ export default {
               class="i-lucide-info text-sm text-n-slate-10"
             />
             <a
+              v-if="!isPiiMasked"
               :href="contactProfileLink"
               target="_blank"
               rel="noopener nofollow noreferrer"

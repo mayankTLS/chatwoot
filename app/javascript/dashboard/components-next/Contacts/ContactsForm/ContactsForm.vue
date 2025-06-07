@@ -9,6 +9,7 @@ import Input from 'dashboard/components-next/input/Input.vue';
 import ComboBox from 'dashboard/components-next/combobox/ComboBox.vue';
 import Icon from 'dashboard/components-next/icon/Icon.vue';
 import PhoneNumberInput from 'dashboard/components-next/phonenumberinput/PhoneNumberInput.vue';
+import { usePiiProtectedActions } from 'dashboard/composables/usePiiProtectedActions';
 
 const props = defineProps({
   contactData: {
@@ -23,11 +24,16 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  readOnly: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(['update']);
 
 const { t } = useI18n();
+const { isPiiMasked, canEditContacts } = usePiiProtectedActions();
 
 const FORM_CONFIG = {
   FIRST_NAME: { field: 'firstName' },
@@ -153,6 +159,10 @@ const getValidationKey = key => {
 };
 
 // Creates a computed property for two-way form field binding
+const isFormDisabled = computed(
+  () => props.readOnly || isPiiMasked.value || !canEditContacts.value
+);
+
 const getFormBinding = key => {
   const field = FORM_CONFIG[key]?.field;
   if (!field) return null;
@@ -245,6 +255,7 @@ defineExpose({
             v-model="state.additionalAttributes.countryCode"
             :options="countryOptions"
             :placeholder="item.placeholder"
+            :disabled="isFormDisabled"
             class="[&>div>button]:h-8"
             :class="{
               '[&>div>button]:bg-n-alpha-black2 [&>div>button:not(.focused)]:!outline-transparent':
@@ -258,12 +269,14 @@ defineExpose({
             v-model="getFormBinding(item.key).value"
             :placeholder="item.placeholder"
             :show-border="isDetailsView"
+            :disabled="isFormDisabled"
           />
           <Input
             v-else
             v-model="getFormBinding(item.key).value"
             :placeholder="item.placeholder"
             :message-type="getMessageType(item.key)"
+            :disabled="isFormDisabled"
             :custom-input-class="`h-8 !pt-1 !pb-1 ${
               !isDetailsView
                 ? '[&:not(.error,.focus)]:!outline-transparent'
@@ -307,6 +320,7 @@ defineExpose({
             class="w-auto min-w-[100px] text-sm bg-transparent outline-none reset-base text-n-slate-12 dark:text-n-slate-12 placeholder:text-n-slate-10 dark:placeholder:text-n-slate-10"
             :placeholder="item.placeholder"
             :size="item.placeholder.length"
+            :disabled="isFormDisabled"
             @input="emit('update', state)"
           />
         </div>
