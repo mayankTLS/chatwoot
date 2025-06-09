@@ -51,6 +51,16 @@ const getFulfillmentStatusClass = status => {
   return classes[status?.toLowerCase()] || 'bg-slate-100 text-slate-800';
 };
 
+const getOrderStatusClass = status => {
+  const classes = {
+    open: 'bg-blue-100 text-blue-800',
+    closed: 'bg-green-100 text-green-800',
+    cancelled: 'bg-gray-100 text-gray-800',
+    archived: 'bg-yellow-100 text-yellow-800',
+  };
+  return classes[status?.toLowerCase()] || 'bg-slate-100 text-slate-800';
+};
+
 // Order action availability
 const canCancel = computed(() => {
   const financial = props.order.financialStatus?.toLowerCase();
@@ -156,6 +166,17 @@ const displayOrderNumber = computed(() => {
 
       <!-- Third row: Status badges -->
       <div class="flex flex-wrap items-center gap-2 text-xs">
+        <div class="flex items-center gap-1">
+          <span class="text-slate-600">{{
+            $t('ZPROTECT.ORDER_ITEM.ORDER_STATUS')
+          }}</span>
+          <span
+            class="px-2 py-0.5 text-xs font-medium rounded-full"
+            :class="getOrderStatusClass(order.status)"
+          >
+            {{ order.status || 'Unknown' }}
+          </span>
+        </div>
         <div class="flex items-center gap-1">
           <span class="text-slate-600">{{
             $t('ZPROTECT.ORDER_ITEM.FINANCIAL_STATUS')
