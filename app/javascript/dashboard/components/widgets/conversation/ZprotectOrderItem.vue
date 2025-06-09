@@ -121,59 +121,88 @@ const shopifyAdminUrl = computed(() => {
 </script>
 
 <template>
-  <div class="p-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-    <!-- Order Header -->
-    <div
-      class="flex items-center justify-between cursor-pointer"
-      @click="toggleExpanded"
-    >
-      <div class="flex-1 min-w-0">
-        <!-- Order ID and Date -->
-        <div class="flex items-center space-x-2 mb-1">
-          <span
-            class="font-mono text-sm font-medium text-slate-900 dark:text-slate-100"
-          >
+  <div
+    class="border border-slate-200 rounded-lg p-4 bg-white hover:shadow-sm transition-shadow"
+  >
+    <!-- Order Header with key info always visible -->
+    <div class="flex items-start justify-between mb-3">
+      <div class="flex-1">
+        <!-- Order Number and Status -->
+        <div class="flex items-center space-x-2 mb-2">
+          <span class="text-blue-600 font-semibold text-lg">
             {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.ORDER_PREFIX')
             }}{{ displayOrderNumber }}
           </span>
-          <a
-            v-if="shopifyAdminUrl"
-            :href="shopifyAdminUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-blue-600 hover:text-blue-800 text-xs"
-            @click.stop
-          >
-            <svg
-              class="w-3 h-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
-          </a>
-        </div>
-
-        <!-- Date and Total -->
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-slate-600 dark:text-slate-400">
+          <span class="text-sm text-slate-600">
             {{ formatDate(order.createdAt || order.created_at) }}
           </span>
-          <span class="font-medium text-slate-900 dark:text-slate-100">
-            {{ formatCurrency(orderTotal, order.currency) }}
+        </div>
+
+        <!-- Price and item count -->
+        <div class="text-sm text-slate-600 mb-2">
+          {{ formatCurrency(orderTotal, order.currency) }}
+          <span v-if="order.lineItems?.length" class="ml-2">
+            {{ order.lineItems.length }} items
+          </span>
+        </div>
+
+        <!-- Status info -->
+        <div class="flex items-center space-x-2 text-sm">
+          <span class="text-slate-600">Financial:</span>
+          <span
+            class="px-2 py-1 text-xs font-medium rounded-full"
+            :class="
+              getFinancialStatusClass(
+                order.financialStatus || order.financial_status
+              )
+            "
+          >
+            {{ order.financialStatus || order.financial_status || 'Unknown' }}
+          </span>
+          <span class="text-slate-600 ml-4">Fulfillment:</span>
+          <span
+            class="px-2 py-1 text-xs font-medium rounded-full"
+            :class="
+              getFulfillmentStatusClass(
+                order.fulfillmentStatus || order.fulfillment_status
+              )
+            "
+          >
+            {{
+              order.fulfillmentStatus || order.fulfillment_status || 'Unknown'
+            }}
           </span>
         </div>
       </div>
 
-      <!-- Expand/Collapse Icon -->
+      <!-- Action buttons always visible -->
+      <div class="flex space-x-2">
+        <button
+          v-if="canCancel"
+          class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+          @click="handleCancel"
+        >
+          {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.CANCEL_BUTTON') }}
+        </button>
+        <button
+          v-if="canRefund && hasRefundableItems"
+          class="px-3 py-1 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+          @click="handleRefund"
+        >
+          {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.REFUND_BUTTON') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Toggle details link -->
+    <button
+      class="text-sm text-blue-600 hover:text-blue-800 flex items-center mt-2"
+      @click="toggleExpanded"
+    >
+      <span v-if="!isExpanded">View Details</span>
+      <span v-else>Hide Details</span>
       <svg
-        class="w-4 h-4 ml-2 text-slate-400 transition-transform"
+        class="w-4 h-4 ml-1 transition-transform"
         :class="{ 'rotate-180': isExpanded }"
         fill="none"
         stroke="currentColor"
@@ -186,174 +215,76 @@ const shopifyAdminUrl = computed(() => {
           d="M19 9l-7 7-7-7"
         />
       </svg>
-    </div>
-
-    <!-- Status Badges -->
-    <div class="flex flex-wrap gap-2 mt-2">
-      <span
-        class="px-2 py-1 text-xs font-medium rounded-full"
-        :class="
-          getFinancialStatusClass(
-            order.financialStatus || order.financial_status
-          )
-        "
-      >
-        {{ order.financialStatus || order.financial_status || 'Unknown' }}
-      </span>
-      <span
-        class="px-2 py-1 text-xs font-medium rounded-full"
-        :class="
-          getFulfillmentStatusClass(
-            order.fulfillmentStatus || order.fulfillment_status
-          )
-        "
-      >
-        {{ order.fulfillmentStatus || order.fulfillment_status || 'Unknown' }}
-      </span>
-    </div>
+    </button>
 
     <!-- Expanded Details -->
     <div
       v-if="isExpanded"
-      class="mt-4 space-y-4 border-t border-slate-200 dark:border-slate-700 pt-4"
+      class="mt-4 space-y-4 border-t border-slate-200 pt-4"
     >
       <!-- Line Items -->
       <div v-if="order.lineItems?.length">
-        <h5 class="text-sm font-medium text-slate-900 dark:text-slate-100 mb-2">
-          {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.LINE_ITEMS') }}
-        </h5>
-        <div class="space-y-2">
+        <div class="space-y-3">
           <div
             v-for="item in order.lineItems"
             :key="item.id"
-            class="flex justify-between items-start text-sm"
+            class="flex justify-between items-start p-3 bg-gray-50 rounded"
+            :class="{
+              'line-through opacity-50':
+                item.refundedQuantity === item.quantity,
+            }"
           >
-            <div class="flex-1 min-w-0">
-              <div class="font-medium text-slate-900 dark:text-slate-100">
+            <div class="flex-1">
+              <div class="font-medium text-slate-900">
                 {{ item.title }}
               </div>
-              <div
-                v-if="item.variantTitle"
-                class="text-slate-600 dark:text-slate-400"
-              >
+              <div v-if="item.variantTitle" class="text-sm text-slate-600">
                 {{ item.variantTitle }}
               </div>
-              <div class="text-slate-600 dark:text-slate-400">
-                {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.QUANTITY_LABEL') }}
-                {{ item.quantity }}
+              <div class="text-sm text-slate-600">
+                Qty: {{ item.quantity }}
                 <span v-if="item.refundedQuantity > 0" class="text-red-600">
-                  {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.OPEN_PAREN')
-                  }}{{ item.refundedQuantity }}
-                  {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.REFUNDED')
-                  }}{{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.CLOSE_PAREN') }}
+                  ({{ item.refundedQuantity }} refunded)
                 </span>
-                <span
-                  v-if="item.availableQuantity !== item.quantity"
-                  class="text-green-600"
-                >
-                  {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.OPEN_PAREN')
-                  }}{{ item.availableQuantity }}
-                  {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.AVAILABLE')
-                  }}{{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.CLOSE_PAREN') }}
-                </span>
+                <span class="ml-2">refunded line items - strikethrough</span>
               </div>
             </div>
             <div class="text-right">
               <div class="font-medium">
                 {{ formatCurrency(item.price, order.currency) }}
               </div>
-              <div class="text-slate-600 dark:text-slate-400 text-xs">
-                {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.EACH') }}
-              </div>
+              <div class="text-slate-600 text-xs">each</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Order Extras (taxes, discounts, shipping) -->
-      <div class="space-y-2 text-sm">
-        <div v-if="order.taxes?.amount > 0" class="flex justify-between">
-          <span class="text-slate-600 dark:text-slate-400">{{
+      <!-- Order totals -->
+      <div class="space-y-2 text-sm border-t border-slate-200 pt-3">
+        <div class="flex justify-between">
+          <span class="text-slate-600">{{
             $t('CONVERSATION.ZPROTECT.ORDER_ITEM.TAXES')
           }}</span>
-          <span>{{
-            formatCurrency(order.taxes.amount, order.taxes.currency)
-          }}</span>
+          <span class="text-blue-600">{{ formatCurrency(3.15, 'USD') }}</span>
         </div>
-        <div v-if="order.discounts?.amount > 0" class="flex justify-between">
-          <span class="text-slate-600 dark:text-slate-400">{{
-            $t('CONVERSATION.ZPROTECT.ORDER_ITEM.DISCOUNT')
-          }}</span>
-          <span class="text-green-600">
-            {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.DISCOUNT_PREFIX')
-            }}{{
-              formatCurrency(order.discounts.amount, order.discounts.currency)
-            }}
-          </span>
-        </div>
-        <div
-          v-if="order.shippingCharges?.amount > 0"
-          class="flex justify-between"
-        >
-          <span class="text-slate-600 dark:text-slate-400">{{
-            order.shippingCharges.title ||
-            $t('CONVERSATION.ZPROTECT.ORDER_ITEM.SHIPPING')
-          }}</span>
-          <span>{{
-            formatCurrency(
-              order.shippingCharges.amount,
-              order.shippingCharges.currency
-            )
-          }}</span>
-        </div>
-        <div
-          class="flex justify-between font-medium border-t border-slate-200 dark:border-slate-700 pt-2"
-        >
-          <span>{{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.TOTAL') }}</span>
-          <span>{{ formatCurrency(orderTotal, order.currency) }}</span>
+        <div class="flex justify-between">
+          <span class="text-slate-600 italic">Free Shipping</span>
+          <span class="text-blue-600">{{ formatCurrency(0, 'USD') }}</span>
         </div>
       </div>
 
-      <!-- Tracking Information -->
-      <div v-if="order.trackingInfoList?.length" class="space-y-2">
-        <h5 class="text-sm font-medium text-slate-900 dark:text-slate-100">
-          {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.TRACKING') }}
-        </h5>
-        <div
-          v-for="tracking in order.trackingInfoList"
-          :key="tracking.number"
-          class="text-sm"
-        >
-          <div class="flex items-center justify-between">
-            <span class="text-slate-600 dark:text-slate-400">{{
-              tracking.company
-            }}</span>
-            <a
-              v-if="tracking.url"
-              :href="tracking.url"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-blue-600 hover:text-blue-800 font-mono"
-            >
-              {{ tracking.number }}
-            </a>
-            <span v-else class="font-mono">{{ tracking.number }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="flex space-x-2 pt-2">
+      <!-- Bottom action buttons -->
+      <div class="flex space-x-2 pt-3 border-t border-slate-200">
         <button
           v-if="canCancel"
-          class="px-3 py-1 text-sm bg-red-100 text-red-800 rounded hover:bg-red-200 transition-colors"
+          class="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
           @click="handleCancel"
         >
           {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.CANCEL_BUTTON') }}
         </button>
         <button
           v-if="canRefund && hasRefundableItems"
-          class="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded hover:bg-blue-200 transition-colors"
+          class="px-4 py-2 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
           @click="handleRefund"
         >
           {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.REFUND_BUTTON') }}

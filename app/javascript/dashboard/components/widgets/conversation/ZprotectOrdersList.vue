@@ -26,6 +26,8 @@ const error = ref('');
 const isMultiStore = ref(false);
 const storeStatuses = ref({});
 const summary = ref({});
+const selectedStore = ref(null);
+const expandedStores = ref({});
 
 // Modal states
 const showCancelModal = ref(false);
@@ -80,6 +82,38 @@ const ordersByStore = computed(() => {
   return grouped;
 });
 
+// Get store list for left panel
+const storeList = computed(() => {
+  const stores = Object.keys(ordersByStore.value)
+    .map(storeName => {
+      const storeOrders = ordersByStore.value[storeName];
+      // Find the most recent order date for this store
+      const mostRecentOrderDate = storeOrders.reduce((latest, order) => {
+        const orderDate = new Date(order.createdAt || order.created_at);
+        return orderDate > latest ? orderDate : latest;
+      }, new Date(0));
+
+      return {
+        name: storeName,
+        orderCount: storeOrders.length,
+        status: storeStatuses.value[storeName] || 'success',
+        orders: storeOrders,
+        hasOpenOrders: hasStoreOpenOrders(storeOrders),
+        mostRecentOrderDate,
+      };
+    })
+    .filter(store => store.orderCount > 0) // Only show stores with orders
+    .sort((a, b) => b.mostRecentOrderDate - a.mostRecentOrderDate); // Sort by most recent order first
+
+  return stores;
+});
+
+// Get orders for selected store
+const selectedStoreOrders = computed(() => {
+  if (!selectedStore.value) return [];
+  return ordersByStore.value[selectedStore.value] || [];
+});
+
 // Handle order actions
 const handleCancelOrder = order => {
   selectedOrder.value = order;
@@ -127,13 +161,48 @@ const getStoreStatusClass = storeName => {
   }
 };
 
-// Check if store has priority orders (paid but unfulfilled)
-const hasStoreHighPriority = storeOrders => {
-  return storeOrders.some(
-    order =>
-      order.financialStatus === 'paid' &&
-      order.fulfillmentStatus !== 'fulfilled'
-  );
+// Check if store has open orders (paid but unfulfilled or pending)
+const hasStoreOpenOrders = storeOrders => {
+  return storeOrders.some(order => {
+    const financial = order.financialStatus?.toLowerCase();
+    const fulfillment = order.fulfillmentStatus?.toLowerCase();
+
+    // Open orders are: paid but unfulfilled, or pending/authorized
+    return (
+      (financial === 'paid' && fulfillment !== 'fulfilled') ||
+      financial === 'pending' ||
+      financial === 'authorized'
+    );
+  });
+};
+
+// Toggle store expansion
+const toggleStore = storeName => {
+  if (selectedStore.value === storeName) {
+    selectedStore.value = null;
+  } else {
+    selectedStore.value = storeName;
+  }
+};
+
+// Get store status styling
+const getStoreRowClass = store => {
+  const baseClass =
+    'p-3 border mb-2 rounded-lg cursor-pointer transition-colors';
+
+  if (selectedStore.value === store.name) {
+    // Selected store styling - red highlighting only for stores with open orders
+    if (store.hasOpenOrders) {
+      return `${baseClass} bg-red-100 border-red-300`;
+    }
+    return `${baseClass} bg-gray-100 border-gray-300`;
+  }
+
+  // Non-selected store styling - red highlighting only for stores with open orders
+  if (store.hasOpenOrders) {
+    return `${baseClass} bg-red-50 border-red-200 hover:bg-red-100`;
+  }
+  return `${baseClass} border-gray-200 hover:bg-gray-50`;
 };
 
 // Watch for contact ID changes
@@ -156,6 +225,23 @@ watch(
     }
   }
 );
+
+// Auto-select first store if only one store with orders
+watch(
+  () => storeList.value,
+  newStores => {
+    if (newStores.length === 1 && !selectedStore.value) {
+      selectedStore.value = newStores[0].name;
+    }
+    // If current selected store no longer has orders, clear selection
+    else if (
+      selectedStore.value &&
+      !newStores.find(store => store.name === selectedStore.value)
+    ) {
+      selectedStore.value = null;
+    }
+  }
+);
 </script>
 
 <template>
@@ -163,12 +249,12 @@ watch(
     <!-- Header with refresh button -->
     <div class="flex items-center justify-between mb-3">
       <h4 class="text-sm font-medium">
-        {{ $t('ZPROTECT.ORDERS_LIST.TITLE') }}
+        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.TITLE') }}
       </h4>
       <button
         :disabled="loading"
         class="p-1 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 disabled:opacity-50"
-        :title="$t('ZPROTECT.ORDERS_LIST.REFRESH_BUTTON')"
+        :title="$t('CONVERSATION.ZPROTECT.ORDERS_LIST.REFRESH_BUTTON')"
         @click="refreshOrders"
       >
         <svg
@@ -192,7 +278,7 @@ watch(
     <div v-if="loading" class="flex items-center justify-center py-8">
       <Spinner size="sm" />
       <span class="ml-2 text-sm text-slate-500">{{
-        $t('ZPROTECT.ORDERS_LIST.LOADING')
+        $t('CONVERSATION.ZPROTECT.ORDERS_LIST.LOADING')
       }}</span>
     </div>
 
@@ -232,7 +318,7 @@ watch(
             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        {{ $t('ZPROTECT.ORDERS_LIST.NO_CONTACT_INFO') }}
+        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.NO_CONTACT_INFO') }}
       </div>
     </div>
 
@@ -252,83 +338,113 @@ watch(
             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
           />
         </svg>
-        {{ $t('ZPROTECT.ORDERS_LIST.NO_ORDERS') }}
+        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.NO_ORDERS') }}
       </div>
     </div>
 
     <!-- Orders content -->
-    <div v-else class="space-y-4">
-      <!-- Multi-store summary -->
+    <div v-else>
+      <!-- Summary -->
       <div
         v-if="isMultiStore && summary.totalStores"
-        class="mb-4 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"
+        class="mb-4 p-3 bg-blue-50 rounded-lg flex items-center"
       >
-        <div class="text-sm">
-          <div class="font-medium mb-1">
-            {{
-              $t('ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
-                orderCount: orders.length,
-                storeCount: summary.totalStores,
-              })
-            }}
-          </div>
-          <div class="text-slate-600 dark:text-slate-400 text-xs">
-            {{
-              $t('ZPROTECT.ORDERS_LIST.STORE_STATUS', {
-                successful: summary.successfulStores,
-                failed: summary.failedStores || 0,
-              })
-            }}
-          </div>
-        </div>
+        <svg
+          class="w-4 h-4 mr-2 text-blue-600"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            d="M9 11H7v8h2v-8zm4 0h-2v8h2v-8zm4 0h-2v8h2v-8zm2-7H3v2h2v13a2 2 0 002 2h10a2 2 0 002-2V6h2V4z"
+          />
+        </svg>
+        <span class="text-sm font-medium text-slate-700">
+          {{
+            $t('CONVERSATION.ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
+              orderCount: orders.length,
+              storeCount: summary.totalStores,
+            })
+          }}
+        </span>
       </div>
 
-      <!-- Orders by store -->
-      <div
-        v-for="(storeOrders, storeName) in ordersByStore"
-        :key="storeName"
-        class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
-      >
-        <!-- Store header (for multi-store) -->
-        <div
-          v-if="isMultiStore"
-          class="px-3 py-2 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700"
-          :class="{
-            'bg-red-50 dark:bg-red-900/20': hasStoreHighPriority(storeOrders),
-          }"
-        >
-          <div class="flex items-center justify-between">
-            <div class="flex items-center">
-              <span class="mr-2" :class="getStoreStatusClass(storeName)">
-                {{ getStoreStatusIcon(storeName) }}
-              </span>
-              <span class="font-medium text-sm">{{ storeName }}</span>
-              <span
-                v-if="hasStoreHighPriority(storeOrders)"
-                class="ml-2 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full"
-              >
-                {{ $t('ZPROTECT.ORDERS_LIST.PRIORITY_ORDERS') }}
-              </span>
+      <!-- Two column layout -->
+      <div class="flex flex-col lg:flex-row gap-4" style="min-height: 400px">
+        <!-- Left: Store List -->
+        <div class="w-full lg:w-80 overflow-y-auto">
+          <div class="space-y-2">
+            <div
+              v-for="store in storeList"
+              :key="store.name"
+              :class="getStoreRowClass(store)"
+              @click="toggleStore(store.name)"
+            >
+              <div class="flex items-center">
+                <span class="mr-3" :class="getStoreStatusClass(store.name)">
+                  {{ getStoreStatusIcon(store.name) }}
+                </span>
+                <div class="flex-1">
+                  <div class="flex items-center">
+                    <span class="text-sm font-medium text-slate-700">{{
+                      store.name
+                    }}</span>
+                    <span class="ml-2 text-xs text-slate-500">
+                      ({{ store.orderCount }} orders)
+                    </span>
+                  </div>
+                </div>
+                <svg
+                  class="w-4 h-4 text-slate-400 transition-transform"
+                  :class="{ 'rotate-90': selectedStore === store.name }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
             </div>
-            <span class="text-xs text-slate-500">
-              {{
-                $t('ZPROTECT.ORDERS_LIST.ORDER_COUNT', {
-                  count: storeOrders.length,
-                })
-              }}
-            </span>
           </div>
         </div>
 
-        <!-- Orders list -->
-        <div class="divide-y divide-slate-200 dark:divide-slate-700">
-          <ZprotectOrderItem
-            v-for="order in storeOrders"
-            :key="order.id"
-            :order="order"
-            @cancel="handleCancelOrder"
-            @refund="handleRefundOrder"
-          />
+        <!-- Right: Selected Store Orders -->
+        <div class="flex-1 border-l border-slate-200 pl-4">
+          <div v-if="!selectedStore" class="text-center text-slate-500 mt-20">
+            <svg
+              class="w-12 h-12 mx-auto mb-4 text-slate-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+            <p class="text-sm">
+              Level one - on opening the store specific accordion - list of
+              orders
+            </p>
+          </div>
+
+          <div v-else class="overflow-y-auto">
+            <div class="space-y-3">
+              <ZprotectOrderItem
+                v-for="order in selectedStoreOrders"
+                :key="order.id"
+                :order="order"
+                @cancel="handleCancelOrder"
+                @refund="handleRefundOrder"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

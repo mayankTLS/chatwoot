@@ -443,7 +443,9 @@
       "ORDER_COUNT": "{count} order | {count} orders",
       "RETRY_BUTTON": "Retry",
       "REFRESH_BUTTON": "Refresh Orders",
-      "STORE_LABEL": "Store:"
+      "STORE_LABEL": "Store:",
+      "ORDERS_TEXT": "orders",
+      "SELECT_STORE_MESSAGE": "Select a store to view orders"
     },
     "ORDER_ITEM": {
       "ORDER_NUMBER": "Order",
@@ -466,7 +468,15 @@
       "CANCEL_BUTTON": "Cancel Order",
       "REFUND_BUTTON": "Process Refund",
       "VIEW_DETAILS": "View Details",
-      "HIDE_DETAILS": "Hide Details"
+      "HIDE_DETAILS": "Hide Details",
+      "ITEMS_TEXT": "items",
+      "FINANCIAL_STATUS": "Financial:",
+      "FULFILLMENT_STATUS": "Fulfillment:",
+      "QUANTITY_TEXT": "Qty:",
+      "REFUNDED_TEXT": "refunded",
+      "EACH_TEXT": "each",
+      "FREE_SHIPPING": "Free Shipping",
+      "REFUNDED_LINE_ITEMS": "refunded line items - strikethrough"
     },
     "REASONS": {
       "CUSTOMER": "Customer requested",
