@@ -476,7 +476,9 @@
       "REFUNDED_TEXT": "refunded",
       "EACH_TEXT": "each",
       "FREE_SHIPPING": "Free Shipping",
-      "REFUNDED_LINE_ITEMS": "refunded line items - strikethrough"
+      "REFUNDED_LINE_ITEMS": "refunded line items - strikethrough",
+      "TRACKING_INFO": "Tracking Information",
+      "TRACK_PACKAGE": "Track Package"
     },
     "REASONS": {
       "CUSTOMER": "Customer requested",

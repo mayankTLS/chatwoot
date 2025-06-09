@@ -112,37 +112,56 @@ const displayOrderNumber = computed(() => {
 
 <template>
   <div
-    class="border border-slate-200 rounded-lg p-4 bg-white hover:shadow-sm transition-shadow"
+    class="border border-slate-200 rounded-lg p-3 bg-white hover:shadow-sm transition-shadow"
   >
     <!-- Order Header with key info always visible -->
-    <div class="flex items-start justify-between mb-3">
-      <div class="flex-1">
-        <!-- Order Number and Status -->
-        <div class="flex items-center space-x-2 mb-2">
-          <span class="text-blue-600 font-semibold text-lg">
+    <div class="mb-2">
+      <!-- First row: Order number, date, and action buttons -->
+      <div class="flex items-start justify-between mb-2">
+        <div class="flex items-center flex-wrap gap-2">
+          <span class="text-blue-600 font-semibold text-sm">
             {{ $t('ZPROTECT.ORDER_ITEM.ORDER_PREFIX') }}{{ displayOrderNumber }}
           </span>
-          <span class="text-sm text-slate-600">
+          <span class="text-xs text-slate-600">
             {{ formatDate(order.createdAt || order.created_at) }}
           </span>
         </div>
-
-        <!-- Price and item count -->
-        <div class="text-sm text-slate-600 mb-2">
-          {{ formatCurrency(orderTotal, order.currency) }}
-          <span v-if="order.lineItems?.length" class="ml-2">
-            {{ order.lineItems.length }}
-            {{ $t('ZPROTECT.ORDER_ITEM.ITEMS_TEXT') }}
-          </span>
+        <!-- Action buttons always visible -->
+        <div class="flex gap-1 flex-shrink-0 ml-2">
+          <button
+            v-if="canCancel"
+            class="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+            @click="handleCancel"
+          >
+            {{ $t('ZPROTECT.ORDER_ITEM.CANCEL_BUTTON') }}
+          </button>
+          <button
+            v-if="canRefund && hasRefundableItems"
+            class="px-2 py-1 text-xs bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
+            @click="handleRefund"
+          >
+            {{ $t('ZPROTECT.ORDER_ITEM.REFUND_BUTTON') }}
+          </button>
         </div>
+      </div>
 
-        <!-- Status info -->
-        <div class="flex items-center space-x-2 text-sm">
+      <!-- Second row: Price and item count -->
+      <div class="text-xs text-slate-600 mb-1">
+        {{ formatCurrency(orderTotal, order.currency) }}
+        <span v-if="order.lineItems?.length" class="ml-2">
+          {{ order.lineItems.length }}
+          {{ $t('ZPROTECT.ORDER_ITEM.ITEMS_TEXT') }}
+        </span>
+      </div>
+
+      <!-- Third row: Status badges -->
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <div class="flex items-center gap-1">
           <span class="text-slate-600">{{
             $t('ZPROTECT.ORDER_ITEM.FINANCIAL_STATUS')
           }}</span>
           <span
-            class="px-2 py-1 text-xs font-medium rounded-full"
+            class="px-2 py-0.5 text-xs font-medium rounded-full"
             :class="
               getFinancialStatusClass(
                 order.financialStatus || order.financial_status
@@ -151,11 +170,13 @@ const displayOrderNumber = computed(() => {
           >
             {{ order.financialStatus || order.financial_status || 'Unknown' }}
           </span>
-          <span class="text-slate-600 ml-4">{{
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="text-slate-600">{{
             $t('ZPROTECT.ORDER_ITEM.FULFILLMENT_STATUS')
           }}</span>
           <span
-            class="px-2 py-1 text-xs font-medium rounded-full"
+            class="px-2 py-0.5 text-xs font-medium rounded-full"
             :class="
               getFulfillmentStatusClass(
                 order.fulfillmentStatus || order.fulfillment_status
@@ -168,29 +189,11 @@ const displayOrderNumber = computed(() => {
           </span>
         </div>
       </div>
-
-      <!-- Action buttons always visible -->
-      <div class="flex space-x-2">
-        <button
-          v-if="canCancel"
-          class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-          @click="handleCancel"
-        >
-          {{ $t('ZPROTECT.ORDER_ITEM.CANCEL_BUTTON') }}
-        </button>
-        <button
-          v-if="canRefund && hasRefundableItems"
-          class="px-3 py-1 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
-          @click="handleRefund"
-        >
-          {{ $t('ZPROTECT.ORDER_ITEM.REFUND_BUTTON') }}
-        </button>
-      </div>
     </div>
 
     <!-- Toggle details link -->
     <button
-      class="text-sm text-blue-600 hover:text-blue-800 flex items-center mt-2"
+      class="text-xs text-blue-600 hover:text-blue-800 flex items-center"
       @click="toggleExpanded"
     >
       <span v-if="!isExpanded">{{
@@ -198,7 +201,7 @@ const displayOrderNumber = computed(() => {
       }}</span>
       <span v-else>{{ $t('ZPROTECT.ORDER_ITEM.HIDE_DETAILS') }}</span>
       <svg
-        class="w-4 h-4 ml-1 transition-transform"
+        class="w-3 h-3 ml-1 transition-transform"
         :class="{ 'rotate-180': isExpanded }"
         fill="none"
         stroke="currentColor"
@@ -216,15 +219,15 @@ const displayOrderNumber = computed(() => {
     <!-- Expanded Details -->
     <div
       v-if="isExpanded"
-      class="mt-4 space-y-4 border-t border-slate-200 pt-4"
+      class="mt-3 space-y-3 border-t border-slate-200 pt-3"
     >
       <!-- Line Items -->
       <div v-if="order.lineItems?.length">
-        <div class="space-y-3">
+        <div class="space-y-2">
           <div
             v-for="item in order.lineItems"
             :key="item.id"
-            class="flex justify-between items-start p-3 bg-gray-50 rounded"
+            class="flex justify-between items-start p-2 bg-gray-50 rounded text-xs"
             :class="{
               'line-through opacity-50':
                 item.refundedQuantity === item.quantity,
@@ -234,19 +237,18 @@ const displayOrderNumber = computed(() => {
               <div class="font-medium text-slate-900">
                 {{ item.title }}
               </div>
-              <div v-if="item.variantTitle" class="text-sm text-slate-600">
+              <div v-if="item.variantTitle" class="text-xs text-slate-600">
                 {{ item.variantTitle }}
               </div>
-              <div class="text-sm text-slate-600">
+              <div class="text-xs text-slate-600">
                 {{ $t('ZPROTECT.ORDER_ITEM.QUANTITY_TEXT') }}
                 {{ item.quantity }}
                 <span v-if="item.refundedQuantity > 0" class="text-red-600">
-                  ({{ item.refundedQuantity }}
-                  {{ $t('ZPROTECT.ORDER_ITEM.REFUNDED_TEXT') }})
+                  {{ $t('ZPROTECT.ORDER_ITEM.OPEN_PAREN')
+                  }}{{ item.refundedQuantity }}
+                  {{ $t('ZPROTECT.ORDER_ITEM.REFUNDED_TEXT')
+                  }}{{ $t('ZPROTECT.ORDER_ITEM.CLOSE_PAREN') }}
                 </span>
-                <span class="ml-2">{{
-                  $t('ZPROTECT.ORDER_ITEM.REFUNDED_LINE_ITEMS')
-                }}</span>
               </div>
             </div>
             <div class="text-right">
@@ -262,37 +264,68 @@ const displayOrderNumber = computed(() => {
       </div>
 
       <!-- Order totals -->
-      <div class="space-y-2 text-sm border-t border-slate-200 pt-3">
+      <div class="space-y-1 text-xs border-t border-slate-200 pt-2">
         <div class="flex justify-between">
           <span class="text-slate-600">{{
             $t('ZPROTECT.ORDER_ITEM.TAXES')
           }}</span>
-          <span class="text-blue-600">{{ formatCurrency(3.15, 'USD') }}</span>
+          <span class="text-blue-600">{{
+            formatCurrency(
+              order.totalTax || order.total_tax || 0,
+              order.currency
+            )
+          }}</span>
         </div>
         <div class="flex justify-between">
           <span class="text-slate-600 italic">{{
-            $t('ZPROTECT.ORDER_ITEM.FREE_SHIPPING')
+            $t('ZPROTECT.ORDER_ITEM.SHIPPING')
           }}</span>
-          <span class="text-blue-600">{{ formatCurrency(0, 'USD') }}</span>
+          <span class="text-blue-600">{{
+            formatCurrency(
+              order.totalShipping || order.total_shipping || 0,
+              order.currency
+            )
+          }}</span>
         </div>
       </div>
 
-      <!-- Bottom action buttons -->
-      <div class="flex space-x-2 pt-3 border-t border-slate-200">
-        <button
-          v-if="canCancel"
-          class="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-          @click="handleCancel"
-        >
-          {{ $t('ZPROTECT.ORDER_ITEM.CANCEL_BUTTON') }}
-        </button>
-        <button
-          v-if="canRefund && hasRefundableItems"
-          class="px-4 py-2 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
-          @click="handleRefund"
-        >
-          {{ $t('ZPROTECT.ORDER_ITEM.REFUND_BUTTON') }}
-        </button>
+      <!-- Tracking info if available -->
+      <div
+        v-if="
+          order.trackingCompany ||
+          order.tracking_company ||
+          order.trackingNumber ||
+          order.tracking_number
+        "
+        class="border-t border-slate-200 pt-2"
+      >
+        <div class="text-xs">
+          <div class="font-medium text-slate-700 mb-1">
+            {{ $t('ZPROTECT.ORDER_ITEM.TRACKING_INFO') }}
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-slate-600">
+              <span v-if="order.trackingCompany || order.tracking_company">
+                {{ order.trackingCompany || order.tracking_company }}
+              </span>
+              <span
+                v-if="order.trackingNumber || order.tracking_number"
+                class="ml-2"
+              >
+                {{ order.trackingNumber || order.tracking_number }}
+              </span>
+            </div>
+            <a
+              v-if="order.trackingUrl || order.tracking_url"
+              :href="order.trackingUrl || order.tracking_url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-blue-600 hover:text-blue-800 text-xs"
+            >
+              {{ $t('ZPROTECT.ORDER_ITEM.TRACK_PACKAGE') }}
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

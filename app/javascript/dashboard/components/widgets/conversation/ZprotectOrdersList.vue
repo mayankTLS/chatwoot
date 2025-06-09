@@ -122,12 +122,6 @@ const storeList = computed(() => {
   return stores;
 });
 
-// Get orders for selected store
-const selectedStoreOrders = computed(() => {
-  if (!selectedStore.value) return [];
-  return ordersByStore.value[selectedStore.value] || [];
-});
-
 // Handle order actions
 const handleCancelOrder = order => {
   selectedOrder.value = order;
@@ -186,22 +180,19 @@ const toggleStore = storeName => {
 
 // Get store status styling
 const getStoreRowClass = store => {
-  const baseClass =
-    'p-3 border mb-2 rounded-lg cursor-pointer transition-colors';
-
   if (selectedStore.value === store.name) {
     // Selected store styling - red highlighting only for stores with open orders
     if (store.hasOpenOrders) {
-      return `${baseClass} bg-red-100 border-red-300`;
+      return 'bg-red-100 hover:bg-red-100';
     }
-    return `${baseClass} bg-gray-100 border-gray-300`;
+    return 'bg-gray-100 hover:bg-gray-100';
   }
 
   // Non-selected store styling - red highlighting only for stores with open orders
   if (store.hasOpenOrders) {
-    return `${baseClass} bg-red-50 border-red-200 hover:bg-red-100`;
+    return 'bg-red-50 hover:bg-red-100';
   }
-  return `${baseClass} border-gray-200 hover:bg-gray-50`;
+  return 'bg-white hover:bg-gray-50';
 };
 
 // Watch for contact ID changes
@@ -367,76 +358,66 @@ watch(
         </span>
       </div>
 
-      <!-- Two column layout -->
-      <div class="flex flex-col lg:flex-row gap-4 min-h-[400px]">
-        <!-- Left: Store List -->
-        <div class="w-full lg:w-80 overflow-y-auto">
-          <div class="space-y-2">
-            <div
-              v-for="store in storeList"
-              :key="store.name"
-              :class="getStoreRowClass(store)"
-              @click="toggleStore(store.name)"
-            >
-              <div class="flex items-center">
-                <span class="mr-3" :class="getStoreStatusClass(store.name)">
-                  {{ getStoreStatusIcon(store.name) }}
-                </span>
-                <div class="flex-1">
-                  <div class="flex items-center">
-                    <span class="text-sm font-medium text-slate-700">{{
-                      store.name
-                    }}</span>
-                    <span class="ml-2 text-xs text-slate-500">
-                      ({{ store.orderCount }}
-                      {{ $t('ZPROTECT.ORDERS_LIST.ORDERS_TEXT') }})
-                    </span>
-                  </div>
+      <!-- Single column layout with accordion -->
+      <div class="space-y-3">
+        <!-- Store accordion items -->
+        <div
+          v-for="store in storeList"
+          :key="store.name"
+          class="border rounded-lg overflow-hidden"
+          :class="{
+            'border-red-300 bg-red-50': store.hasOpenOrders,
+            'border-slate-200': !store.hasOpenOrders,
+          }"
+        >
+          <!-- Store header - always visible -->
+          <div
+            :class="getStoreRowClass(store)"
+            class="p-3 cursor-pointer"
+            @click="toggleStore(store.name)"
+          >
+            <div class="flex items-center">
+              <span class="mr-3" :class="getStoreStatusClass(store.name)">
+                {{ getStoreStatusIcon(store.name) }}
+              </span>
+              <div class="flex-1">
+                <div class="flex items-center">
+                  <span class="text-sm font-medium text-slate-700">{{
+                    store.name
+                  }}</span>
+                  <span class="ml-2 text-xs text-slate-500">
+                    {{ $t('ZPROTECT.ORDER_ITEM.OPEN_PAREN')
+                    }}{{ store.orderCount }}
+                    {{ $t('ZPROTECT.ORDERS_LIST.ORDERS_TEXT')
+                    }}{{ $t('ZPROTECT.ORDER_ITEM.CLOSE_PAREN') }}
+                  </span>
                 </div>
-                <svg
-                  class="w-4 h-4 text-slate-400 transition-transform"
-                  :class="{ 'rotate-90': selectedStore === store.name }"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
               </div>
+              <svg
+                class="w-4 h-4 text-slate-400 transition-transform"
+                :class="{ 'rotate-180': selectedStore === store.name }"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7 7"
+                />
+              </svg>
             </div>
           </div>
-        </div>
 
-        <!-- Right: Selected Store Orders -->
-        <div class="flex-1 border-l border-slate-200 pl-4">
-          <div v-if="!selectedStore" class="text-center text-slate-500 mt-20">
-            <svg
-              class="w-12 h-12 mx-auto mb-4 text-slate-300"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-            <p class="text-sm">
-              {{ $t('ZPROTECT.ORDERS_LIST.SELECT_STORE_MESSAGE') }}
-            </p>
-          </div>
-
-          <div v-else class="overflow-y-auto">
-            <div class="space-y-3">
+          <!-- Store orders - collapsible -->
+          <div
+            v-if="selectedStore === store.name"
+            class="border-t border-slate-200"
+          >
+            <div class="p-3 space-y-3 max-h-[600px] overflow-y-auto">
               <ZprotectOrderItem
-                v-for="order in selectedStoreOrders"
+                v-for="order in store.orders"
                 :key="order.id"
                 :order="order"
                 @cancel="handleCancelOrder"
