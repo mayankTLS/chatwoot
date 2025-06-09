@@ -352,7 +352,7 @@ watch(
           {{
             $t('ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
               orderCount: orders.length,
-              storeCount: summary.totalStores,
+              storeCount: storeList.length,
             })
           }}
         </span>
