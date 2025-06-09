@@ -248,12 +248,12 @@ watch(
     <!-- Header with refresh button -->
     <div class="flex items-center justify-between mb-3">
       <h4 class="text-sm font-medium">
-        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.TITLE') }}
+        {{ $t('ZPROTECT.ORDERS_LIST.TITLE') }}
       </h4>
       <button
         :disabled="loading"
         class="p-1 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 disabled:opacity-50"
-        :title="$t('CONVERSATION.ZPROTECT.ORDERS_LIST.REFRESH_BUTTON')"
+        :title="$t('ZPROTECT.ORDERS_LIST.REFRESH_BUTTON')"
         @click="refreshOrders"
       >
         <svg
@@ -277,7 +277,7 @@ watch(
     <div v-if="loading" class="flex items-center justify-center py-8">
       <Spinner size="sm" />
       <span class="ml-2 text-sm text-slate-500">{{
-        $t('CONVERSATION.ZPROTECT.ORDERS_LIST.LOADING')
+        $t('ZPROTECT.ORDERS_LIST.LOADING')
       }}</span>
     </div>
 
@@ -317,7 +317,7 @@ watch(
             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.NO_CONTACT_INFO') }}
+        {{ $t('ZPROTECT.ORDERS_LIST.NO_CONTACT_INFO') }}
       </div>
     </div>
 
@@ -337,7 +337,7 @@ watch(
             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
           />
         </svg>
-        {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.NO_ORDERS') }}
+        {{ $t('ZPROTECT.ORDERS_LIST.NO_ORDERS') }}
       </div>
     </div>
 
@@ -359,7 +359,7 @@ watch(
         </svg>
         <span class="text-sm font-medium text-slate-700">
           {{
-            $t('CONVERSATION.ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
+            $t('ZPROTECT.ORDERS_LIST.ORDERS_SUMMARY', {
               orderCount: orders.length,
               storeCount: summary.totalStores,
             })
@@ -389,7 +389,7 @@ watch(
                     }}</span>
                     <span class="ml-2 text-xs text-slate-500">
                       ({{ store.orderCount }}
-                      {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.ORDERS_TEXT') }})
+                      {{ $t('ZPROTECT.ORDERS_LIST.ORDERS_TEXT') }})
                     </span>
                   </div>
                 </div>
@@ -429,7 +429,7 @@ watch(
               />
             </svg>
             <p class="text-sm">
-              {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.SELECT_STORE_MESSAGE') }}
+              {{ $t('ZPROTECT.ORDERS_LIST.SELECT_STORE_MESSAGE') }}
             </p>
           </div>
 

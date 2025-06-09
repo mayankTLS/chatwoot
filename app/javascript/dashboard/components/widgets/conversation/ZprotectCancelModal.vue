@@ -27,10 +27,10 @@ const formData = ref({
 const { t } = useI18n();
 
 const cancellationReasons = computed(() => [
-  { value: 'CUSTOMER', label: t('CONVERSATION.ZPROTECT.REASONS.CUSTOMER') },
-  { value: 'INVENTORY', label: t('CONVERSATION.ZPROTECT.REASONS.INVENTORY') },
-  { value: 'FRAUD', label: t('CONVERSATION.ZPROTECT.REASONS.FRAUD') },
-  { value: 'OTHER', label: t('CONVERSATION.ZPROTECT.REASONS.OTHER') },
+  { value: 'CUSTOMER', label: t('ZPROTECT.REASONS.CUSTOMER') },
+  { value: 'INVENTORY', label: t('ZPROTECT.REASONS.INVENTORY') },
+  { value: 'FRAUD', label: t('ZPROTECT.REASONS.FRAUD') },
+  { value: 'OTHER', label: t('ZPROTECT.REASONS.OTHER') },
 ]);
 
 // Computed properties
@@ -102,7 +102,7 @@ const handleClose = () => {
         class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700"
       >
         <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100">
-          {{ $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.TITLE') }}
+          {{ $t('ZPROTECT.CANCEL_MODAL.TITLE') }}
         </h3>
         <button
           :disabled="loading"
@@ -131,13 +131,13 @@ const handleClose = () => {
         <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-lg">
           <div class="text-sm">
             <div class="font-medium text-slate-900 dark:text-slate-100 mb-1">
-              {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.ORDER_NUMBER')
-              }}{{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.ORDER_PREFIX')
+              {{ $t('ZPROTECT.ORDER_ITEM.ORDER_NUMBER')
+              }}{{ $t('ZPROTECT.ORDER_ITEM.ORDER_PREFIX')
               }}{{ displayOrderNumber }}
             </div>
             <div class="text-slate-600 dark:text-slate-400 mb-2">
-              {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.TOTAL')
-              }}{{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.SEPARATOR') }}
+              {{ $t('ZPROTECT.ORDER_ITEM.TOTAL')
+              }}{{ $t('ZPROTECT.ORDER_ITEM.SEPARATOR') }}
               {{ formatCurrency(orderTotal, order.currency) }}
             </div>
             <div class="flex flex-wrap gap-2">
@@ -173,10 +173,10 @@ const handleClose = () => {
             </svg>
             <div class="text-sm text-yellow-800">
               <div class="font-medium">
-                {{ $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.WARNING.TITLE') }}
+                {{ $t('ZPROTECT.CANCEL_MODAL.WARNING.TITLE') }}
               </div>
               <div class="mt-1">
-                {{ $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.WARNING.MESSAGE') }}
+                {{ $t('ZPROTECT.CANCEL_MODAL.WARNING.MESSAGE') }}
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ const handleClose = () => {
             <label
               class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
             >
-              {{ $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.REASON_LABEL') }}
+              {{ $t('ZPROTECT.CANCEL_MODAL.REASON_LABEL') }}
             </label>
             <select
               v-model="formData.reason"
@@ -216,7 +216,7 @@ const handleClose = () => {
                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
               />
               <span class="ml-2 text-sm text-slate-700 dark:text-slate-300">
-                {{ $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.REFUND_LABEL') }}
+                {{ $t('ZPROTECT.CANCEL_MODAL.REFUND_LABEL') }}
               </span>
             </label>
 
@@ -228,7 +228,7 @@ const handleClose = () => {
                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
               />
               <span class="ml-2 text-sm text-slate-700 dark:text-slate-300">
-                {{ $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.RESTOCK_LABEL') }}
+                {{ $t('ZPROTECT.CANCEL_MODAL.RESTOCK_LABEL') }}
               </span>
             </label>
           </div>
@@ -238,15 +238,13 @@ const handleClose = () => {
             <label
               class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
             >
-              {{ $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.STAFF_NOTE_LABEL') }}
+              {{ $t('ZPROTECT.CANCEL_MODAL.STAFF_NOTE_LABEL') }}
             </label>
             <textarea
               v-model="formData.staffNote"
               :disabled="loading"
               rows="3"
-              :placeholder="
-                $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.STAFF_NOTE_PLACEHOLDER')
-              "
+              :placeholder="$t('ZPROTECT.CANCEL_MODAL.STAFF_NOTE_PLACEHOLDER')"
               class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 resize-none"
             />
           </div>
@@ -286,7 +284,7 @@ const handleClose = () => {
           class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700"
           @click="handleClose"
         >
-          {{ $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.CANCEL_BUTTON') }}
+          {{ $t('ZPROTECT.CANCEL_MODAL.CANCEL_BUTTON') }}
         </button>
         <button
           :disabled="loading"
@@ -316,8 +314,8 @@ const handleClose = () => {
           </svg>
           {{
             loading
-              ? $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.LOADING_BUTTON')
-              : $t('CONVERSATION.ZPROTECT.CANCEL_MODAL.CONFIRM_BUTTON')
+              ? $t('ZPROTECT.CANCEL_MODAL.LOADING_BUTTON')
+              : $t('ZPROTECT.CANCEL_MODAL.CONFIRM_BUTTON')
           }}
         </button>
       </div>

@@ -120,8 +120,7 @@ const displayOrderNumber = computed(() => {
         <!-- Order Number and Status -->
         <div class="flex items-center space-x-2 mb-2">
           <span class="text-blue-600 font-semibold text-lg">
-            {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.ORDER_PREFIX')
-            }}{{ displayOrderNumber }}
+            {{ $t('ZPROTECT.ORDER_ITEM.ORDER_PREFIX') }}{{ displayOrderNumber }}
           </span>
           <span class="text-sm text-slate-600">
             {{ formatDate(order.createdAt || order.created_at) }}
@@ -133,14 +132,14 @@ const displayOrderNumber = computed(() => {
           {{ formatCurrency(orderTotal, order.currency) }}
           <span v-if="order.lineItems?.length" class="ml-2">
             {{ order.lineItems.length }}
-            {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.ITEMS_TEXT') }}
+            {{ $t('ZPROTECT.ORDER_ITEM.ITEMS_TEXT') }}
           </span>
         </div>
 
         <!-- Status info -->
         <div class="flex items-center space-x-2 text-sm">
           <span class="text-slate-600">{{
-            $t('CONVERSATION.ZPROTECT.ORDER_ITEM.FINANCIAL_STATUS')
+            $t('ZPROTECT.ORDER_ITEM.FINANCIAL_STATUS')
           }}</span>
           <span
             class="px-2 py-1 text-xs font-medium rounded-full"
@@ -153,7 +152,7 @@ const displayOrderNumber = computed(() => {
             {{ order.financialStatus || order.financial_status || 'Unknown' }}
           </span>
           <span class="text-slate-600 ml-4">{{
-            $t('CONVERSATION.ZPROTECT.ORDER_ITEM.FULFILLMENT_STATUS')
+            $t('ZPROTECT.ORDER_ITEM.FULFILLMENT_STATUS')
           }}</span>
           <span
             class="px-2 py-1 text-xs font-medium rounded-full"
@@ -177,14 +176,14 @@ const displayOrderNumber = computed(() => {
           class="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
           @click="handleCancel"
         >
-          {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.CANCEL_BUTTON') }}
+          {{ $t('ZPROTECT.ORDER_ITEM.CANCEL_BUTTON') }}
         </button>
         <button
           v-if="canRefund && hasRefundableItems"
           class="px-3 py-1 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
           @click="handleRefund"
         >
-          {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.REFUND_BUTTON') }}
+          {{ $t('ZPROTECT.ORDER_ITEM.REFUND_BUTTON') }}
         </button>
       </div>
     </div>
@@ -195,11 +194,9 @@ const displayOrderNumber = computed(() => {
       @click="toggleExpanded"
     >
       <span v-if="!isExpanded">{{
-        $t('CONVERSATION.ZPROTECT.ORDER_ITEM.VIEW_DETAILS')
+        $t('ZPROTECT.ORDER_ITEM.VIEW_DETAILS')
       }}</span>
-      <span v-else>{{
-        $t('CONVERSATION.ZPROTECT.ORDER_ITEM.HIDE_DETAILS')
-      }}</span>
+      <span v-else>{{ $t('ZPROTECT.ORDER_ITEM.HIDE_DETAILS') }}</span>
       <svg
         class="w-4 h-4 ml-1 transition-transform"
         :class="{ 'rotate-180': isExpanded }"
@@ -241,14 +238,14 @@ const displayOrderNumber = computed(() => {
                 {{ item.variantTitle }}
               </div>
               <div class="text-sm text-slate-600">
-                {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.QUANTITY_TEXT') }}
+                {{ $t('ZPROTECT.ORDER_ITEM.QUANTITY_TEXT') }}
                 {{ item.quantity }}
                 <span v-if="item.refundedQuantity > 0" class="text-red-600">
                   ({{ item.refundedQuantity }}
-                  {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.REFUNDED_TEXT') }})
+                  {{ $t('ZPROTECT.ORDER_ITEM.REFUNDED_TEXT') }})
                 </span>
                 <span class="ml-2">{{
-                  $t('CONVERSATION.ZPROTECT.ORDER_ITEM.REFUNDED_LINE_ITEMS')
+                  $t('ZPROTECT.ORDER_ITEM.REFUNDED_LINE_ITEMS')
                 }}</span>
               </div>
             </div>
@@ -257,7 +254,7 @@ const displayOrderNumber = computed(() => {
                 {{ formatCurrency(item.price, order.currency) }}
               </div>
               <div class="text-slate-600 text-xs">
-                {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.EACH_TEXT') }}
+                {{ $t('ZPROTECT.ORDER_ITEM.EACH_TEXT') }}
               </div>
             </div>
           </div>
@@ -268,13 +265,13 @@ const displayOrderNumber = computed(() => {
       <div class="space-y-2 text-sm border-t border-slate-200 pt-3">
         <div class="flex justify-between">
           <span class="text-slate-600">{{
-            $t('CONVERSATION.ZPROTECT.ORDER_ITEM.TAXES')
+            $t('ZPROTECT.ORDER_ITEM.TAXES')
           }}</span>
           <span class="text-blue-600">{{ formatCurrency(3.15, 'USD') }}</span>
         </div>
         <div class="flex justify-between">
           <span class="text-slate-600 italic">{{
-            $t('CONVERSATION.ZPROTECT.ORDER_ITEM.FREE_SHIPPING')
+            $t('ZPROTECT.ORDER_ITEM.FREE_SHIPPING')
           }}</span>
           <span class="text-blue-600">{{ formatCurrency(0, 'USD') }}</span>
         </div>
@@ -287,14 +284,14 @@ const displayOrderNumber = computed(() => {
           class="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
           @click="handleCancel"
         >
-          {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.CANCEL_BUTTON') }}
+          {{ $t('ZPROTECT.ORDER_ITEM.CANCEL_BUTTON') }}
         </button>
         <button
           v-if="canRefund && hasRefundableItems"
           class="px-4 py-2 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
           @click="handleRefund"
         >
-          {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.REFUND_BUTTON') }}
+          {{ $t('ZPROTECT.ORDER_ITEM.REFUND_BUTTON') }}
         </button>
       </div>
     </div>

@@ -41,7 +41,7 @@
 - Iterate after confirmation
 - Avoid writing specs unless explicitly asked
 - Remove dead/unreachable/unused code
-- Don’t write multiple versions or backups for the same logic — pick the best approach and implement it
+- Don't write multiple versions or backups for the same logic — pick the best approach and implement it
 - Don't reference Claude in commit messages
 
 ## Project-Specific
@@ -56,3 +56,7 @@
 ## Ruby Best Practices
 
 - Use compact `module/class` definitions; avoid nested styles
+
+## Memory: I18n Translation Keys
+
+- Always use correct i18n translation key paths. this can not be a recurring issue!

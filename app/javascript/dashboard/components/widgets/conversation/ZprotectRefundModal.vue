@@ -179,7 +179,7 @@ const handleClose = () => {
         class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700"
       >
         <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100">
-          {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.TITLE') }}
+          {{ $t('ZPROTECT.REFUND_MODAL.TITLE') }}
         </h3>
         <button
           :disabled="loading"
@@ -209,13 +209,13 @@ const handleClose = () => {
           <div class="flex justify-between items-start">
             <div>
               <div class="font-medium text-slate-900 dark:text-slate-100 mb-1">
-                {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.ORDER_NUMBER')
-                }}{{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.ORDER_PREFIX')
+                {{ $t('ZPROTECT.ORDER_ITEM.ORDER_NUMBER')
+                }}{{ $t('ZPROTECT.ORDER_ITEM.ORDER_PREFIX')
                 }}{{ displayOrderNumber }}
               </div>
               <div class="text-sm text-slate-600 dark:text-slate-400">
                 {{
-                  $t('CONVERSATION.ZPROTECT.REFUND_MODAL.REFUNDABLE_ITEMS', {
+                  $t('ZPROTECT.REFUND_MODAL.REFUNDABLE_ITEMS', {
                     count: refundableItems.length,
                   })
                 }}
@@ -223,7 +223,7 @@ const handleClose = () => {
             </div>
             <div class="text-right">
               <div class="text-sm text-slate-600 dark:text-slate-400">
-                {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.SELECTED_TOTAL') }}
+                {{ $t('ZPROTECT.REFUND_MODAL.SELECTED_TOTAL') }}
               </div>
               <div
                 class="font-medium text-lg text-slate-900 dark:text-slate-100"
@@ -237,7 +237,7 @@ const handleClose = () => {
         <!-- Quick Actions -->
         <div class="flex justify-between items-center">
           <div class="text-sm font-medium text-slate-700 dark:text-slate-300">
-            {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.SELECT_ITEMS') }}
+            {{ $t('ZPROTECT.REFUND_MODAL.SELECT_ITEMS') }}
           </div>
           <div class="space-x-2">
             <button
@@ -298,18 +298,14 @@ const handleClose = () => {
                     >
                       <span>
                         {{ formatCurrency(item.price, order.currency) }}
-                        {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.EACH') }}
+                        {{ $t('ZPROTECT.ORDER_ITEM.EACH') }}
                       </span>
                       <span class="mx-2">{{
-                        $t('CONVERSATION.ZPROTECT.REFUND_MODAL.SEPARATOR')
+                        $t('ZPROTECT.REFUND_MODAL.SEPARATOR')
                       }}</span>
                       <span>
                         {{ item.availableQuantity }}
-                        {{
-                          $t(
-                            'CONVERSATION.ZPROTECT.REFUND_MODAL.AVAILABLE_FOR_REFUND'
-                          )
-                        }}
+                        {{ $t('ZPROTECT.REFUND_MODAL.AVAILABLE_FOR_REFUND') }}
                       </span>
                     </div>
                   </div>
@@ -320,7 +316,7 @@ const handleClose = () => {
                     class="flex items-center space-x-2 ml-4"
                   >
                     <label class="text-sm text-slate-600 dark:text-slate-400">{{
-                      $t('CONVERSATION.ZPROTECT.REFUND_MODAL.QUANTITY_LABEL')
+                      $t('ZPROTECT.REFUND_MODAL.QUANTITY_LABEL')
                     }}</label>
                     <input
                       type="number"
@@ -341,8 +337,8 @@ const handleClose = () => {
                   v-if="formData.selectedItems[item.id]?.selected"
                   class="mt-2 text-right text-sm font-medium text-slate-900 dark:text-slate-100"
                 >
-                  {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.LINE_TOTAL')
-                  }}{{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.SEPARATOR') }}
+                  {{ $t('ZPROTECT.REFUND_MODAL.LINE_TOTAL')
+                  }}{{ $t('ZPROTECT.ORDER_ITEM.SEPARATOR') }}
                   {{
                     formatCurrency(
                       parseFloat(item.price) *
@@ -375,10 +371,10 @@ const handleClose = () => {
             />
           </svg>
           <div class="text-lg font-medium">
-            {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.NO_ITEMS.TITLE') }}
+            {{ $t('ZPROTECT.REFUND_MODAL.NO_ITEMS.TITLE') }}
           </div>
           <div class="text-sm">
-            {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.NO_ITEMS.MESSAGE') }}
+            {{ $t('ZPROTECT.REFUND_MODAL.NO_ITEMS.MESSAGE') }}
           </div>
         </div>
 
@@ -393,7 +389,7 @@ const handleClose = () => {
               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
             />
             <span class="ml-2 text-sm text-slate-700 dark:text-slate-300">
-              {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.RESTOCK_LABEL') }}
+              {{ $t('ZPROTECT.REFUND_MODAL.RESTOCK_LABEL') }}
             </span>
           </label>
 
@@ -402,15 +398,13 @@ const handleClose = () => {
             <label
               class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
             >
-              {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.REFUND_NOTE_LABEL') }}
+              {{ $t('ZPROTECT.REFUND_MODAL.REFUND_NOTE_LABEL') }}
             </label>
             <textarea
               v-model="formData.note"
               :disabled="loading"
               rows="2"
-              :placeholder="
-                $t('CONVERSATION.ZPROTECT.REFUND_MODAL.REFUND_NOTE_PLACEHOLDER')
-              "
+              :placeholder="$t('ZPROTECT.REFUND_MODAL.REFUND_NOTE_PLACEHOLDER')"
               class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 resize-none"
             />
           </div>
@@ -450,13 +444,13 @@ const handleClose = () => {
           class="text-sm text-slate-600 dark:text-slate-400"
         >
           {{
-            $t('CONVERSATION.ZPROTECT.REFUND_MODAL.ITEMS_SELECTED', {
+            $t('ZPROTECT.REFUND_MODAL.ITEMS_SELECTED', {
               count: selectedRefundItems.length,
             })
           }}
         </div>
         <div v-else class="text-sm text-slate-400">
-          {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.NO_ITEMS_SELECTED') }}
+          {{ $t('ZPROTECT.REFUND_MODAL.NO_ITEMS_SELECTED') }}
         </div>
 
         <!-- Action Buttons -->
@@ -467,7 +461,7 @@ const handleClose = () => {
             class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700"
             @click="handleClose"
           >
-            {{ $t('CONVERSATION.ZPROTECT.REFUND_MODAL.CANCEL_BUTTON') }}
+            {{ $t('ZPROTECT.REFUND_MODAL.CANCEL_BUTTON') }}
           </button>
           <button
             :disabled="!canSubmit"
@@ -497,8 +491,8 @@ const handleClose = () => {
             </svg>
             {{
               loading
-                ? $t('CONVERSATION.ZPROTECT.REFUND_MODAL.LOADING_BUTTON')
-                : `${$t('CONVERSATION.ZPROTECT.REFUND_MODAL.CONFIRM_BUTTON')} (${formatCurrency(totalRefundAmount, order.currency)})`
+                ? $t('ZPROTECT.REFUND_MODAL.LOADING_BUTTON')
+                : `${$t('ZPROTECT.REFUND_MODAL.CONFIRM_BUTTON')} (${formatCurrency(totalRefundAmount, order.currency)})`
             }}
           </button>
         </div>
