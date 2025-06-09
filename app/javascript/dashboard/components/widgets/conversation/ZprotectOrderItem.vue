@@ -108,16 +108,6 @@ const displayOrderNumber = computed(() => {
     props.order.id?.toString().split('/').pop()
   );
 });
-
-// External link to Shopify admin (if order has proper GID)
-const shopifyAdminUrl = computed(() => {
-  if (props.order.id?.includes('gid://shopify/Order/')) {
-    // const orderId = props.order.id.split('/').pop();
-    // Note: Would need store domain to construct proper URL
-    return null; // Disabled for now
-  }
-  return null;
-});
 </script>
 
 <template>
@@ -142,13 +132,16 @@ const shopifyAdminUrl = computed(() => {
         <div class="text-sm text-slate-600 mb-2">
           {{ formatCurrency(orderTotal, order.currency) }}
           <span v-if="order.lineItems?.length" class="ml-2">
-            {{ order.lineItems.length }} items
+            {{ order.lineItems.length }}
+            {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.ITEMS_TEXT') }}
           </span>
         </div>
 
         <!-- Status info -->
         <div class="flex items-center space-x-2 text-sm">
-          <span class="text-slate-600">Financial:</span>
+          <span class="text-slate-600">{{
+            $t('CONVERSATION.ZPROTECT.ORDER_ITEM.FINANCIAL_STATUS')
+          }}</span>
           <span
             class="px-2 py-1 text-xs font-medium rounded-full"
             :class="
@@ -159,7 +152,9 @@ const shopifyAdminUrl = computed(() => {
           >
             {{ order.financialStatus || order.financial_status || 'Unknown' }}
           </span>
-          <span class="text-slate-600 ml-4">Fulfillment:</span>
+          <span class="text-slate-600 ml-4">{{
+            $t('CONVERSATION.ZPROTECT.ORDER_ITEM.FULFILLMENT_STATUS')
+          }}</span>
           <span
             class="px-2 py-1 text-xs font-medium rounded-full"
             :class="
@@ -199,8 +194,12 @@ const shopifyAdminUrl = computed(() => {
       class="text-sm text-blue-600 hover:text-blue-800 flex items-center mt-2"
       @click="toggleExpanded"
     >
-      <span v-if="!isExpanded">View Details</span>
-      <span v-else>Hide Details</span>
+      <span v-if="!isExpanded">{{
+        $t('CONVERSATION.ZPROTECT.ORDER_ITEM.VIEW_DETAILS')
+      }}</span>
+      <span v-else>{{
+        $t('CONVERSATION.ZPROTECT.ORDER_ITEM.HIDE_DETAILS')
+      }}</span>
       <svg
         class="w-4 h-4 ml-1 transition-transform"
         :class="{ 'rotate-180': isExpanded }"
@@ -242,18 +241,24 @@ const shopifyAdminUrl = computed(() => {
                 {{ item.variantTitle }}
               </div>
               <div class="text-sm text-slate-600">
-                Qty: {{ item.quantity }}
+                {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.QUANTITY_TEXT') }}
+                {{ item.quantity }}
                 <span v-if="item.refundedQuantity > 0" class="text-red-600">
-                  ({{ item.refundedQuantity }} refunded)
+                  ({{ item.refundedQuantity }}
+                  {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.REFUNDED_TEXT') }})
                 </span>
-                <span class="ml-2">refunded line items - strikethrough</span>
+                <span class="ml-2">{{
+                  $t('CONVERSATION.ZPROTECT.ORDER_ITEM.REFUNDED_LINE_ITEMS')
+                }}</span>
               </div>
             </div>
             <div class="text-right">
               <div class="font-medium">
                 {{ formatCurrency(item.price, order.currency) }}
               </div>
-              <div class="text-slate-600 text-xs">each</div>
+              <div class="text-slate-600 text-xs">
+                {{ $t('CONVERSATION.ZPROTECT.ORDER_ITEM.EACH_TEXT') }}
+              </div>
             </div>
           </div>
         </div>
@@ -268,7 +273,9 @@ const shopifyAdminUrl = computed(() => {
           <span class="text-blue-600">{{ formatCurrency(3.15, 'USD') }}</span>
         </div>
         <div class="flex justify-between">
-          <span class="text-slate-600 italic">Free Shipping</span>
+          <span class="text-slate-600 italic">{{
+            $t('CONVERSATION.ZPROTECT.ORDER_ITEM.FREE_SHIPPING')
+          }}</span>
           <span class="text-blue-600">{{ formatCurrency(0, 'USD') }}</span>
         </div>
       </div>

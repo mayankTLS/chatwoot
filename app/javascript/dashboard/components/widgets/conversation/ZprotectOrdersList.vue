@@ -27,7 +27,6 @@ const isMultiStore = ref(false);
 const storeStatuses = ref({});
 const summary = ref({});
 const selectedStore = ref(null);
-const expandedStores = ref({});
 
 // Modal states
 const showCancelModal = ref(false);
@@ -81,6 +80,21 @@ const ordersByStore = computed(() => {
 
   return grouped;
 });
+
+// Check if store has open orders (paid but unfulfilled or pending)
+const hasStoreOpenOrders = storeOrders => {
+  return storeOrders.some(order => {
+    const financial = order.financialStatus?.toLowerCase();
+    const fulfillment = order.fulfillmentStatus?.toLowerCase();
+
+    // Open orders are: paid but unfulfilled, or pending/authorized
+    return (
+      (financial === 'paid' && fulfillment !== 'fulfilled') ||
+      financial === 'pending' ||
+      financial === 'authorized'
+    );
+  });
+};
 
 // Get store list for left panel
 const storeList = computed(() => {
@@ -159,21 +173,6 @@ const getStoreStatusClass = storeName => {
     default:
       return 'text-yellow-600';
   }
-};
-
-// Check if store has open orders (paid but unfulfilled or pending)
-const hasStoreOpenOrders = storeOrders => {
-  return storeOrders.some(order => {
-    const financial = order.financialStatus?.toLowerCase();
-    const fulfillment = order.fulfillmentStatus?.toLowerCase();
-
-    // Open orders are: paid but unfulfilled, or pending/authorized
-    return (
-      (financial === 'paid' && fulfillment !== 'fulfilled') ||
-      financial === 'pending' ||
-      financial === 'authorized'
-    );
-  });
 };
 
 // Toggle store expansion
@@ -369,7 +368,7 @@ watch(
       </div>
 
       <!-- Two column layout -->
-      <div class="flex flex-col lg:flex-row gap-4" style="min-height: 400px">
+      <div class="flex flex-col lg:flex-row gap-4 min-h-[400px]">
         <!-- Left: Store List -->
         <div class="w-full lg:w-80 overflow-y-auto">
           <div class="space-y-2">
@@ -389,7 +388,8 @@ watch(
                       store.name
                     }}</span>
                     <span class="ml-2 text-xs text-slate-500">
-                      ({{ store.orderCount }} orders)
+                      ({{ store.orderCount }}
+                      {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.ORDERS_TEXT') }})
                     </span>
                   </div>
                 </div>
@@ -429,8 +429,7 @@ watch(
               />
             </svg>
             <p class="text-sm">
-              Level one - on opening the store specific accordion - list of
-              orders
+              {{ $t('CONVERSATION.ZPROTECT.ORDERS_LIST.SELECT_STORE_MESSAGE') }}
             </p>
           </div>
 
