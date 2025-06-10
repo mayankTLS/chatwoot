@@ -118,6 +118,28 @@ const displayOrderNumber = computed(() => {
     props.order.id?.toString().split('/').pop()
   );
 });
+
+// Check if order has tracking information
+const hasTrackingInfo = computed(() => {
+  return !!(
+    props.order.trackingNumber ||
+    props.order.tracking_number ||
+    props.order.trackingCompany ||
+    props.order.tracking_company
+  );
+});
+
+// Get tracking details
+const trackingDetails = computed(() => {
+  if (!hasTrackingInfo.value) return null;
+
+  return {
+    company:
+      props.order.trackingCompany || props.order.tracking_company || 'Carrier',
+    number: props.order.trackingNumber || props.order.tracking_number,
+    url: props.order.trackingUrl || props.order.tracking_url,
+  };
+});
 </script>
 
 <template>
@@ -209,6 +231,29 @@ const displayOrderNumber = computed(() => {
             }}
           </span>
         </div>
+      </div>
+
+      <!-- Fourth row: Tracking information (if available) -->
+      <div v-if="hasTrackingInfo" class="flex items-center gap-2 text-xs mt-1">
+        <span class="text-slate-600">
+          {{ $t('ZPROTECT.ORDER_ITEM.TRACKING')
+          }}{{ $t('ZPROTECT.ORDER_ITEM.SEPARATOR') }}
+        </span>
+        <span class="font-medium text-slate-800">
+          {{ trackingDetails.company }}
+          <span v-if="trackingDetails.number">
+            {{ trackingDetails.number }}
+          </span>
+        </span>
+        <a
+          v-if="trackingDetails.url"
+          :href="trackingDetails.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-blue-600 hover:text-blue-800 text-xs underline ml-1"
+        >
+          {{ $t('ZPROTECT.ORDER_ITEM.TRACK_PACKAGE') }}
+        </a>
       </div>
     </div>
 
