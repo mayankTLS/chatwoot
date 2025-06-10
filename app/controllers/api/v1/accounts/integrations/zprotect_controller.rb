@@ -47,6 +47,8 @@ class Api::V1::Accounts::Integrations::ZprotectController < Api::V1::Accounts::B
   end
 
   def cancel_order
+    Rails.logger.info "ZProtect cancel_order called with order_id: #{@order_id}, params: #{params.except(:controller, :action, :account_id, :format)}"
+
     options = {
       refund: params[:refund] != false, # default true
       restock: params[:restock] != false, # default true
@@ -81,6 +83,8 @@ class Api::V1::Accounts::Integrations::ZprotectController < Api::V1::Accounts::B
   end
 
   def refund_order
+    Rails.logger.info "ZProtect refund_order called with order_id: #{@order_id}, params: #{params.except(:controller, :action, :account_id, :format)}"
+
     refund_items = parse_refund_items
     options = {
       note: params[:note] || '',
@@ -190,7 +194,11 @@ class Api::V1::Accounts::Integrations::ZprotectController < Api::V1::Accounts::B
   end
 
   def set_order_params
-    @order_id = params[:order_id] || params[:orderId] || params[:id]
+    # Get order ID from params and decode it to handle URL-encoded Shopify GIDs
+    raw_order_id = params[:order_id] || params[:orderId] || params[:id]
+    @order_id = raw_order_id.present? ? CGI.unescape(raw_order_id) : nil
+
+    Rails.logger.debug { "ZProtect order operation - Raw order ID: #{raw_order_id}, Decoded: #{@order_id}" }
 
     return if @order_id.present?
 

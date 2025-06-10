@@ -60,6 +60,13 @@ const handleCancel = async () => {
     loading.value = true;
     error.value = '';
 
+    // Validate storeId for multi-store operations
+    if (props.order.isMultiStore && !props.order.storeId) {
+      throw new Error(
+        'Store ID is missing for this order. Cannot perform multi-store operation.'
+      );
+    }
+
     const options = {
       refund: formData.value.refund,
       restock: formData.value.restock,
@@ -80,8 +87,26 @@ const handleCancel = async () => {
       error.value = result.data.error || 'Failed to cancel order';
     }
   } catch (e) {
-    error.value =
-      e.response?.data?.error || 'Failed to cancel order. Please try again.';
+    // Enhanced error handling with specific messages
+    if (e.response?.status === 404) {
+      error.value =
+        'Cancel order endpoint not found. Please check configuration.';
+    } else if (
+      e.response?.status === 500 ||
+      e.response?.status === 502 ||
+      e.response?.status === 503
+    ) {
+      error.value =
+        'Service temporarily unavailable. Please try again in a few moments.';
+    } else if (e.response?.status === 429) {
+      error.value =
+        'Too many requests. Please wait a moment before trying again.';
+    } else if (e.message && e.message.includes('Store ID is missing')) {
+      error.value = e.message;
+    } else {
+      error.value =
+        e.response?.data?.error || 'Failed to cancel order. Please try again.';
+    }
   } finally {
     loading.value = false;
   }

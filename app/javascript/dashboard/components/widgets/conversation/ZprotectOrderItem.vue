@@ -62,9 +62,19 @@ const getOrderStatusClass = status => {
 };
 
 // Order action availability
+const hasRefundableItems = computed(() => {
+  return props.order.lineItems?.some(item => item.availableQuantity > 0);
+});
+
 const canCancel = computed(() => {
   const financial = props.order.financialStatus?.toLowerCase();
   const fulfillment = props.order.fulfillmentStatus?.toLowerCase();
+  const orderStatus = props.order.orderStatus?.toLowerCase();
+
+  // Cannot cancel if already cancelled or archived
+  if (orderStatus === 'cancelled' || orderStatus === 'archived') {
+    return false;
+  }
 
   // Can cancel if paid but not fulfilled, or pending
   return (
@@ -76,13 +86,18 @@ const canCancel = computed(() => {
 
 const canRefund = computed(() => {
   const financial = props.order.financialStatus?.toLowerCase();
+  const orderStatus = props.order.orderStatus?.toLowerCase();
 
-  // Can refund if paid or partially paid
-  return financial === 'paid' || financial === 'partially_paid';
-});
+  // Cannot refund if cancelled or archived
+  if (orderStatus === 'cancelled' || orderStatus === 'archived') {
+    return false;
+  }
 
-const hasRefundableItems = computed(() => {
-  return props.order.lineItems?.some(item => item.availableQuantity > 0);
+  // Can refund if paid or partially paid and has refundable items
+  return (
+    (financial === 'paid' || financial === 'partially_paid') &&
+    hasRefundableItems.value
+  );
 });
 
 // Calculate totals including extras

@@ -91,7 +91,7 @@ class ZprotectService
     end
 
     def build_refund_body(refund_items, options)
-      {
+      body = {
         refundLineItems: refund_items.map do |item|
           {
             lineItemId: item[:line_item_id],
@@ -99,9 +99,14 @@ class ZprotectService
           }
         end,
         note: options.fetch(:note, ''),
-        restock: options.fetch(:restock, true),
         storeId: options[:store_id]
-      }.compact
+      }
+
+      # For multi-store, restock is handled differently (per line item)
+      # Only include restock parameter for single-store mode
+      body[:restock] = options[:restock] if !options[:store_id] && options.key?(:restock)
+
+      body.compact
     end
 
     def handle_response(response, action)
@@ -123,8 +128,24 @@ class ZprotectService
         { success: false, error: error_msg, orders: [] }
       when 422
         error_msg = "Business logic error for #{action}"
+        error_detail = response.parsed_response&.dig('error') || response.body
+
+        # Enhanced error handling for multi-store specific errors
+        if error_detail
+          case error_detail
+          when /store[_\s]?not[_\s]?found/i
+            error_detail = 'Store not found for this order'
+          when /store[_\s]?unavailable/i
+            error_detail = 'Store temporarily unavailable'
+          when /store[_\s]?disconnected/i
+            error_detail = 'Store has been disconnected'
+          when /invalid[_\s]?store[_\s]?id/i
+            error_detail = 'Invalid store ID provided'
+          end
+        end
+
         Rails.logger.error "ZProtect: #{error_msg} - #{response.body}"
-        raise StandardError, "#{error_msg}: #{response.parsed_response&.dig('error')}"
+        raise StandardError, "#{error_msg}: #{error_detail}"
       when 429
         error_msg = "Rate limit exceeded for #{action}"
         Rails.logger.warn "ZProtect: #{error_msg}"

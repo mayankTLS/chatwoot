@@ -267,10 +267,10 @@ Rails.application.routes.draw do
             resource :zprotect, controller: 'zprotect', only: [] do
               collection do
                 get :orders
-                post 'orders/:order_id/cancel', action: :cancel_order
-                post 'orders/:order_id/refund', action: :refund_order
                 get :health
                 post 'orders/cache/invalidate', action: :invalidate_cache
+                post 'orders/:order_id/cancel', action: :cancel_order, constraints: { order_id: %r{[^/]+} }
+                post 'orders/:order_id/refund', action: :refund_order, constraints: { order_id: %r{[^/]+} }
               end
             end
           end
