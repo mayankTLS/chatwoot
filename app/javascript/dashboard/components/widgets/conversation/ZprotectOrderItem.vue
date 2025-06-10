@@ -121,6 +121,16 @@ const displayOrderNumber = computed(() => {
 
 // Check if order has tracking information
 const hasTrackingInfo = computed(() => {
+  // Check for trackingInfoList array (correct ZProtect API format)
+  if (
+    props.order.trackingInfoList &&
+    Array.isArray(props.order.trackingInfoList) &&
+    props.order.trackingInfoList.length > 0
+  ) {
+    return true;
+  }
+
+  // Fallback to legacy flat fields for backward compatibility
   return !!(
     props.order.trackingNumber ||
     props.order.tracking_number ||
@@ -133,6 +143,21 @@ const hasTrackingInfo = computed(() => {
 const trackingDetails = computed(() => {
   if (!hasTrackingInfo.value) return null;
 
+  // Use trackingInfoList array (correct ZProtect API format)
+  if (
+    props.order.trackingInfoList &&
+    Array.isArray(props.order.trackingInfoList) &&
+    props.order.trackingInfoList.length > 0
+  ) {
+    const firstTracking = props.order.trackingInfoList[0];
+    return {
+      company: firstTracking.company || 'Carrier',
+      number: firstTracking.number,
+      url: firstTracking.url,
+    };
+  }
+
+  // Fallback to legacy flat fields for backward compatibility
   return {
     company:
       props.order.trackingCompany || props.order.tracking_company || 'Carrier',
@@ -356,20 +381,43 @@ const trackingDetails = computed(() => {
       </div>
 
       <!-- Tracking info if available -->
-      <div
-        v-if="
-          order.trackingCompany ||
-          order.tracking_company ||
-          order.trackingNumber ||
-          order.tracking_number
-        "
-        class="border-t border-slate-200 pt-2"
-      >
+      <div v-if="hasTrackingInfo" class="border-t border-slate-200 pt-2">
         <div class="text-xs">
           <div class="font-medium text-slate-700 mb-1">
             {{ $t('ZPROTECT.ORDER_ITEM.TRACKING_INFO') }}
           </div>
-          <div class="flex items-center justify-between">
+
+          <!-- Handle trackingInfoList array (correct ZProtect API format) -->
+          <div
+            v-if="order.trackingInfoList && order.trackingInfoList.length > 0"
+          >
+            <div
+              v-for="(tracking, index) in order.trackingInfoList"
+              :key="index"
+              class="flex items-center justify-between mb-1 last:mb-0"
+            >
+              <div class="text-slate-600">
+                <span v-if="tracking.company">
+                  {{ tracking.company }}
+                </span>
+                <span v-if="tracking.number" class="ml-2">
+                  {{ tracking.number }}
+                </span>
+              </div>
+              <a
+                v-if="tracking.url"
+                :href="tracking.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-blue-600 hover:text-blue-800 text-xs"
+              >
+                {{ $t('ZPROTECT.ORDER_ITEM.TRACK_PACKAGE') }}
+              </a>
+            </div>
+          </div>
+
+          <!-- Fallback to legacy flat fields for backward compatibility -->
+          <div v-else class="flex items-center justify-between">
             <div class="text-slate-600">
               <span v-if="order.trackingCompany || order.tracking_company">
                 {{ order.trackingCompany || order.tracking_company }}
