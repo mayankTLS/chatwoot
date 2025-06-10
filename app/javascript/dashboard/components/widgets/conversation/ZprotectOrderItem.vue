@@ -172,9 +172,9 @@ const displayOrderNumber = computed(() => {
           }}</span>
           <span
             class="px-2 py-0.5 text-xs font-medium rounded-full"
-            :class="getOrderStatusClass(order.status)"
+            :class="getOrderStatusClass(order.orderStatus)"
           >
-            {{ order.status || 'Unknown' }}
+            {{ order.orderStatus || 'Unknown' }}
           </span>
         </div>
         <div class="flex items-center gap-1">
