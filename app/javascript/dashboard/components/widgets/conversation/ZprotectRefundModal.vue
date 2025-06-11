@@ -509,7 +509,13 @@ const handleClose = () => {
           <button
             :disabled="!canSubmit"
             type="button"
-            class="px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center transition-colors enabled:bg-blue-600 enabled:text-white enabled:hover:bg-blue-700 enabled:border-transparent disabled:bg-slate-200 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed dark:enabled:bg-blue-500 dark:enabled:hover:bg-blue-600 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 dark:disabled:border-slate-600"
+            class="px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center transition-colors"
+            :class="{
+              'bg-blue-600 text-white hover:bg-blue-700 border-transparent dark:bg-blue-500 dark:hover:bg-blue-600':
+                !loading && canSubmit,
+              'bg-slate-200 text-slate-400 border-slate-200 cursor-not-allowed dark:bg-slate-700 dark:text-slate-500 dark:border-slate-600':
+                !canSubmit || loading,
+            }"
             @click="handleRefund"
           >
             <svg
