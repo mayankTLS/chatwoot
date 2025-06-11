@@ -16,6 +16,11 @@ class Api::V1::Accounts::Integrations::ZprotectController < Api::V1::Accounts::B
       return
     end
 
+    # Prevent browser caching of order data
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+
     begin
       result = ZprotectService.get_customer_orders(
         identifier: identifier,

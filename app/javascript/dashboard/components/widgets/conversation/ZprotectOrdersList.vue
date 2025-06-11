@@ -60,7 +60,48 @@ const fetchOrders = async () => {
 };
 
 const refreshOrders = async () => {
-  await fetchOrders();
+  try {
+    loading.value = true;
+    error.value = '';
+
+    // Clear existing state first
+    orders.value = [];
+    isMultiStore.value = false;
+    storeStatuses.value = {};
+    summary.value = {};
+    selectedStore.value = null;
+
+    // Extract contact identifier for cache invalidation
+    const contact_data = contact.value;
+    let identifier = null;
+    let identifierType = null;
+
+    if (contact_data?.email) {
+      identifier = contact_data.email;
+      identifierType = 'email';
+    } else if (contact_data?.phone_number) {
+      identifier = contact_data.phone_number;
+      identifierType = 'phone';
+    }
+
+    // Step 1: Invalidate cache if we have identifier
+    if (identifier && identifierType) {
+      try {
+        await ZprotectAPI.invalidateCache(identifier, identifierType);
+      } catch (cacheError) {
+        // Cache invalidation failed but continue with refresh
+        // Error will be logged by the API layer
+      }
+    }
+
+    // Step 2: Fetch fresh orders
+    await fetchOrders();
+  } catch (e) {
+    error.value = e.response?.data?.error || 'Failed to refresh orders';
+    orders.value = [];
+  } finally {
+    loading.value = false;
+  }
 };
 
 // Group orders by store for multi-store display
