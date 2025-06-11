@@ -80,13 +80,14 @@ const totalRefundAmount = computed(() => {
 });
 
 const hasSelectedItems = computed(() => {
-  // Explicitly depend on formData to ensure reactivity
+  // Force reactivity by accessing the reactive formData value
   const items = formData.value.selectedItems;
-  return Object.values(items).some(item => item?.selected);
+  // Ensure we're tracking changes to the selectedItems object
+  return Object.values(items).some(item => item?.selected === true);
 });
 
 const canSubmit = computed(() => {
-  // More explicit dependency tracking
+  // Explicitly track both dependencies to ensure reactivity
   const hasItems = hasSelectedItems.value;
   const isNotLoading = !loading.value;
   return hasItems && isNotLoading;
@@ -126,12 +127,16 @@ const selectAllItems = () => {
       selected.quantity = 1;
     }
   });
+  // Force reactivity after bulk changes
+  formData.value.selectedItems = { ...formData.value.selectedItems };
 };
 
 const deselectAllItems = () => {
   Object.values(formData.value.selectedItems).forEach(selected => {
     selected.selected = false;
   });
+  // Force reactivity after bulk changes
+  formData.value.selectedItems = { ...formData.value.selectedItems };
 };
 
 // Actions
