@@ -120,8 +120,8 @@ const handleClose = () => {
 </script>
 
 <template>
-  <Modal show :on-close="handleClose" size="medium">
-    <div class="w-full max-w-md mx-auto">
+  <Modal show :on-close="handleClose" :show-close-button="false" size="medium">
+    <div class="w-full max-w-md mx-auto bg-white dark:bg-slate-800 rounded-lg">
       <!-- Header -->
       <div
         class="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700"
@@ -314,7 +314,7 @@ const handleClose = () => {
         <button
           :disabled="loading"
           type="button"
-          class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 flex items-center"
+          class="px-4 py-2 text-sm font-medium border rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center transition-colors enabled:bg-red-600 enabled:text-white enabled:hover:bg-red-700 enabled:border-transparent disabled:bg-slate-200 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed dark:enabled:bg-red-500 dark:enabled:hover:bg-red-600 dark:disabled:bg-slate-700 dark:disabled:text-slate-500 dark:disabled:border-slate-600"
           @click="handleCancel"
         >
           <svg
