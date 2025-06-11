@@ -216,20 +216,20 @@ class Api::V1::Accounts::Integrations::ZprotectController < Api::V1::Accounts::B
   def extract_contact_identifier
     # If contact_id provided, get identifier from contact
     if @contact
-      if @contact.email.present?
-        return [@contact.email, 'email']
-      elsif @contact.phone_number.present?
+      if @contact.phone_number.present?
         return [@contact.phone_number, 'phone']
+      elsif @contact.email.present?
+        return [@contact.email, 'email']
       else
         return [nil, nil]
       end
     end
 
     # Otherwise, check for direct identifier params
-    if params[:email].present?
-      [params[:email], 'email']
-    elsif params[:phone].present?
+    if params[:phone].present?
       [params[:phone], 'phone']
+    elsif params[:email].present?
+      [params[:email], 'email']
     else
       [nil, nil]
     end

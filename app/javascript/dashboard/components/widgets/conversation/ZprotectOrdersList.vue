@@ -17,7 +17,7 @@ const props = defineProps({
 const contact = useFunctionGetter('contacts/getContact', props.contactId);
 
 const hasSearchableInfo = computed(() => {
-  return !!contact.value?.email || !!contact.value?.phone_number;
+  return !!contact.value?.phone_number || !!contact.value?.email;
 });
 
 const orders = ref([]);
@@ -76,12 +76,12 @@ const refreshOrders = async () => {
     let identifier = null;
     let identifierType = null;
 
-    if (contact_data?.email) {
-      identifier = contact_data.email;
-      identifierType = 'email';
-    } else if (contact_data?.phone_number) {
+    if (contact_data?.phone_number) {
       identifier = contact_data.phone_number;
       identifierType = 'phone';
+    } else if (contact_data?.email) {
+      identifier = contact_data.email;
+      identifierType = 'email';
     }
 
     // Step 1: Invalidate cache if we have identifier
