@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import Modal from 'dashboard/components/Modal.vue';
 import ZprotectAPI from '../../../api/integrations/zprotect';
 
@@ -36,7 +36,8 @@ const initializeSelectedItems = () => {
       };
     }
   });
-  formData.value.selectedItems = selected;
+  // Force reactivity by completely replacing the object
+  formData.value.selectedItems = { ...selected };
 };
 
 initializeSelectedItems();
@@ -79,15 +80,20 @@ const totalRefundAmount = computed(() => {
 });
 
 const hasSelectedItems = computed(() => {
-  return selectedRefundItems.value.length > 0;
+  // Explicitly depend on formData to ensure reactivity
+  const items = formData.value.selectedItems;
+  return Object.values(items).some(item => item?.selected);
 });
 
 const canSubmit = computed(() => {
-  return hasSelectedItems.value && !loading.value;
+  // More explicit dependency tracking
+  const hasItems = hasSelectedItems.value;
+  const isNotLoading = !loading.value;
+  return hasItems && isNotLoading;
 });
 
 // Methods
-const toggleItemSelection = item => {
+const toggleItemSelection = async item => {
   const selected = formData.value.selectedItems[item.id];
   if (selected) {
     selected.selected = !selected.selected;
@@ -95,6 +101,12 @@ const toggleItemSelection = item => {
     if (selected.selected) {
       selected.quantity = 1;
     }
+
+    // Force reactivity by reassigning the entire object
+    formData.value.selectedItems = { ...formData.value.selectedItems };
+
+    // Ensure DOM updates
+    await nextTick();
   }
 };
 
