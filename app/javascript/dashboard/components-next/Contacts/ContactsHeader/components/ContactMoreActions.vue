@@ -6,10 +6,10 @@ import { usePiiProtectedActions } from 'dashboard/composables/usePiiProtectedAct
 import Button from 'dashboard/components-next/button/Button.vue';
 import DropdownMenu from 'dashboard/components-next/dropdown-menu/DropdownMenu.vue';
 
-const emit = defineEmits(['add', 'import', 'export']);
+const emit = defineEmits(['add', 'import']);
 
 const { t } = useI18n();
-const { canCreateContacts, canExportContacts } = usePiiProtectedActions();
+const { canCreateContacts } = usePiiProtectedActions();
 
 const contactMenuItems = computed(() => [
   {
@@ -18,13 +18,6 @@ const contactMenuItems = computed(() => [
     value: 'add',
     icon: 'i-lucide-plus',
     disabled: !canCreateContacts.value,
-  },
-  {
-    label: t('CONTACTS_LAYOUT.HEADER.ACTIONS.CONTACT_CREATION.EXPORT_CONTACT'),
-    action: 'export',
-    value: 'export',
-    icon: 'i-lucide-upload',
-    disabled: !canExportContacts.value,
   },
   {
     label: t('CONTACTS_LAYOUT.HEADER.ACTIONS.CONTACT_CREATION.IMPORT_CONTACT'),
@@ -43,8 +36,6 @@ const handleContactAction = ({ action, disabled }) => {
     emit('add');
   } else if (action === 'import') {
     emit('import');
-  } else if (action === 'export') {
-    emit('export');
   }
 };
 </script>
