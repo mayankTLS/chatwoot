@@ -1,11 +1,9 @@
 <script setup>
 import { computed, useSlots } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 
 import Button from 'dashboard/components-next/button/Button.vue';
 import Breadcrumb from 'dashboard/components-next/breadcrumb/Breadcrumb.vue';
-import ComposeConversation from 'dashboard/components-next/NewConversation/ComposeConversation.vue';
 
 const props = defineProps({
   selectedContact: {
@@ -22,9 +20,6 @@ const emit = defineEmits(['goToContactsList', 'toggleBlock']);
 
 const { t } = useI18n();
 const slots = useSlots();
-const route = useRoute();
-
-const contactId = computed(() => route.params.contactId);
 
 const selectedContactName = computed(() => {
   return props.selectedContact?.name;
@@ -85,15 +80,6 @@ const toggleBlock = () => {
                 :disabled="isUpdating"
                 @click="toggleBlock"
               />
-              <ComposeConversation :contact-id="contactId">
-                <template #trigger="{ toggle }">
-                  <Button
-                    :label="$t('CONTACTS_LAYOUT.HEADER.SEND_MESSAGE')"
-                    size="sm"
-                    @click="toggle"
-                  />
-                </template>
-              </ComposeConversation>
             </div>
           </div>
         </div>
