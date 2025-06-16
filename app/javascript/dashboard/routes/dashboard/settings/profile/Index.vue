@@ -22,6 +22,7 @@ import {
   ROLES,
   CONVERSATION_PERMISSIONS,
 } from 'dashboard/constants/permissions.js';
+import { usePiiProtectedActions } from 'dashboard/composables/usePiiProtectedActions';
 
 export default {
   components: {
@@ -41,12 +42,14 @@ export default {
   setup() {
     const { isEditorHotKeyEnabled, updateUISettings } = useUISettings();
     const { currentFontSize, updateFontSize } = useFontSize();
+    const { isPiiMasked } = usePiiProtectedActions();
 
     return {
       currentFontSize,
       updateFontSize,
       isEditorHotKeyEnabled,
       updateUISettings,
+      isPiiMasked,
     };
   },
   data() {
@@ -273,6 +276,7 @@ export default {
       </FormSection>
     </Policy>
     <FormSection
+      v-if="!isPiiMasked"
       :title="$t('PROFILE_SETTINGS.FORM.ACCESS_TOKEN.TITLE')"
       :description="
         useInstallationName(
