@@ -4,7 +4,6 @@ import Input from 'dashboard/components-next/input/Input.vue';
 import Icon from 'dashboard/components-next/icon/Icon.vue';
 import ContactSortMenu from './components/ContactSortMenu.vue';
 import ContactMoreActions from './components/ContactMoreActions.vue';
-import ComposeConversation from 'dashboard/components-next/NewConversation/ComposeConversation.vue';
 
 defineProps({
   showSearch: {
@@ -18,10 +17,6 @@ defineProps({
   headerTitle: {
     type: String,
     required: true,
-  },
-  buttonLabel: {
-    type: String,
-    default: '',
   },
   activeSort: {
     type: String,
@@ -131,12 +126,6 @@ const emit = defineEmits([
             @export="emit('export')"
           />
         </div>
-        <div class="w-px h-4 bg-n-strong" />
-        <ComposeConversation>
-          <template #trigger="{ toggle }">
-            <Button :label="buttonLabel" size="sm" @click="toggle" />
-          </template>
-        </ComposeConversation>
       </div>
     </div>
   </header>

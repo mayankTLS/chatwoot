@@ -278,7 +278,6 @@ defineExpose({
     :is-segments-view="hasActiveSegments"
     :is-label-view="isLabelView"
     :has-active-filters="hasAppliedFilters"
-    :button-label="t('CONTACTS_LAYOUT.HEADER.MESSAGE_BUTTON')"
     @search="emit('search', $event)"
     @update:sort="emit('update:sort', $event)"
     @add="openCreateNewContactDialog"
