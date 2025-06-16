@@ -1,5 +1,4 @@
 <script>
-import { mapGetters } from 'vuex';
 import { useAlert } from 'dashboard/composables';
 import { dynamicTime } from 'shared/helpers/timeHelper';
 import { useAdmin } from 'dashboard/composables/useAdmin';
@@ -9,24 +8,17 @@ import Thumbnail from 'dashboard/components/widgets/Thumbnail.vue';
 import SocialIcons from './SocialIcons.vue';
 import EditContact from './EditContact.vue';
 import ContactMergeModal from 'dashboard/modules/contact/ContactMergeModal.vue';
-import ComposeConversation from 'dashboard/components-next/NewConversation/ComposeConversation.vue';
-import { BUS_EVENTS } from 'shared/constants/busEvents';
-import NextButton from 'dashboard/components-next/button/Button.vue';
-
 import {
   isAConversationRoute,
   isAInboxViewRoute,
   getConversationDashboardRoute,
 } from '../../../../helper/routeHelpers';
-import { emitter } from 'shared/helpers/mitt';
 
 export default {
   components: {
-    NextButton,
     ContactInfoRow,
     EditContact,
     Thumbnail,
-    ComposeConversation,
     SocialIcons,
     ContactMergeModal,
   },
@@ -68,7 +60,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ uiFlags: 'contacts/getUIFlags' }),
     contactProfileLink() {
       return `/app/accounts/${this.$route.params.accountId}/contacts/${this.contact.id}`;
     },
@@ -117,17 +108,6 @@ export default {
     dynamicTime,
     toggleEditModal() {
       this.showEditModal = !this.showEditModal;
-    },
-    openComposeConversationModal(toggleFn) {
-      toggleFn();
-      // Flag to prevent triggering drag n drop,
-      // When compose modal is active
-      emitter.emit(BUS_EVENTS.NEW_CONVERSATION_MODAL, true);
-    },
-    closeComposeConversationModal() {
-      // Flag to enable drag n drop,
-      // When compose modal is closed
-      emitter.emit(BUS_EVENTS.NEW_CONVERSATION_MODAL, false);
     },
     toggleDeleteModal() {
       this.showDeleteModal = !this.showDeleteModal;
@@ -281,52 +261,6 @@ export default {
           />
           <SocialIcons :social-profiles="socialProfiles" />
         </div>
-      </div>
-      <div class="flex items-center w-full mt-0.5 gap-2">
-        <ComposeConversation
-          :contact-id="String(contact.id)"
-          is-modal
-          @close="closeComposeConversationModal"
-        >
-          <template #trigger="{ toggle }">
-            <NextButton
-              v-tooltip.top-end="$t('CONTACT_PANEL.NEW_MESSAGE')"
-              icon="i-ph-chat-circle-dots"
-              slate
-              faded
-              sm
-              @click="openComposeConversationModal(toggle)"
-            />
-          </template>
-        </ComposeConversation>
-        <NextButton
-          v-tooltip.top-end="$t('EDIT_CONTACT.BUTTON_LABEL')"
-          icon="i-ph-pencil-simple"
-          slate
-          faded
-          sm
-          @click="toggleEditModal"
-        />
-        <NextButton
-          v-tooltip.top-end="$t('CONTACT_PANEL.MERGE_CONTACT')"
-          icon="i-ph-arrows-merge"
-          slate
-          faded
-          sm
-          :disabled="uiFlags.isMerging || !shouldAllowContactMerge()"
-          @click="openMergeModal"
-        />
-        <NextButton
-          v-if="isAdmin"
-          v-tooltip.top-end="$t('DELETE_CONTACT.BUTTON_LABEL')"
-          icon="i-ph-trash"
-          slate
-          faded
-          sm
-          ruby
-          :disabled="uiFlags.isDeleting"
-          @click="toggleDeleteModal"
-        />
       </div>
       <EditContact
         v-if="showEditModal"
